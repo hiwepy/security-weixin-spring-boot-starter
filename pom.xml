@@ -586,6 +586,12 @@
 			<artifactId>security-biz-spring-boot-starter</artifactId>
 		</dependency>
 		
+		<!-- For 微信公众号   -->
+		<dependency>
+		    <groupId>com.github.binarywang</groupId>
+		    <artifactId>wx-java-mp-spring-boot-starter</artifactId>
+		</dependency>
+		<!-- For 微信小程序   -->
 		<dependency>
 		    <groupId>com.github.binarywang</groupId>
 		    <artifactId>wx-java-miniapp-spring-boot-starter</artifactId>
