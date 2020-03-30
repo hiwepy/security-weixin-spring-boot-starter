@@ -10,18 +10,21 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
-import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
-import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
-import org.springframework.security.boot.weixin.authentication.WeiXinAuthenticationProcessingFilter;
-import org.springframework.security.boot.weixin.authentication.WeiXinAuthenticationProvider;
+import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
+import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationEntryPoint;
+import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationSuccessHandler;
+import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProcessingFilter;
+import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
@@ -31,18 +34,26 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import me.chanjar.weixin.mp.api.WxMpService;
+
 @Configuration
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
-@EnableConfigurationProperties({ SecurityWeiXinProperties.class })
-public class SecurityWeiXinFilterConfiguration {
+@EnableConfigurationProperties({ SecurityWxProperties.class })
+public class SecurityWxMpFilterConfiguration {
     
+	@Bean
+	public WxMpAuthenticationProvider wxMpAuthenticationProvider(WxMpService wxMpService,
+			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
+		return new WxMpAuthenticationProvider(wxMpService, userDetailsService, passwordEncoder);
+	}
+	
     @Configuration
-    @ConditionalOnProperty(prefix = SecurityWeiXinProperties.PREFIX, value = "enabled", havingValue = "true")
-   	@EnableConfigurationProperties({ SecurityWeiXinProperties.class, SecurityBizProperties.class })
+    @ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
+   	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 4)
    	static class IdentityWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
-    	private final SecurityWeiXinAuthcProperties authcProperties;
+    	private final SecurityWxAuthcProperties authcProperties;
     	
  	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
  	    private final AuthenticationFailureHandler authenticationFailureHandler;
@@ -53,14 +64,14 @@ public class SecurityWeiXinFilterConfiguration {
    		public IdentityWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
-   				SecurityWeiXinAuthcProperties authcProperties,
+   				SecurityWxAuthcProperties authcProperties,
 
-   				ObjectProvider<WeiXinAuthenticationProvider> authenticationProvider,
+   				ObjectProvider<WxMpAuthenticationProvider> authenticationProvider,
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
-   				ObjectProvider<MatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
-   				ObjectProvider<MatchedAuthenticationSuccessHandler> authenticationSuccessHandlerProvider,
-   				ObjectProvider<MatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
+   				ObjectProvider<WxMatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
+   				ObjectProvider<WxMatchedAuthenticationSuccessHandler> authenticationSuccessHandlerProvider,
+   				ObjectProvider<WxMatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
    				ObjectProvider<CaptchaResolver> captchaResolverProvider,
    				ObjectProvider<LogoutHandler> logoutHandlerProvider,
    				ObjectProvider<ObjectMapper> objectMapperProvider
@@ -81,9 +92,9 @@ public class SecurityWeiXinFilterConfiguration {
    			
    		}
    		   		
-   	    public WeiXinAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
+   	    public WxMpAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
    	    	
-   			WeiXinAuthenticationProcessingFilter authenticationFilter = new WeiXinAuthenticationProcessingFilter(
+   	    	WxMpAuthenticationProcessingFilter authenticationFilter = new WxMpAuthenticationProcessingFilter(
    					objectMapper);
    			
    			/**
@@ -98,7 +109,8 @@ public class SecurityWeiXinFilterConfiguration {
 			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
 			
 			map.from(authcProperties.getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
-			map.from(authcProperties.getJscodeParameter()).to(authenticationFilter::setJscodeParameter);
+			map.from(authcProperties.getUnionidParameter()).to(authenticationFilter::setUnionidParameter);
+			map.from(authcProperties.getOpenidParameter()).to(authenticationFilter::setOpenidParameter);
 			
 			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
 			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);

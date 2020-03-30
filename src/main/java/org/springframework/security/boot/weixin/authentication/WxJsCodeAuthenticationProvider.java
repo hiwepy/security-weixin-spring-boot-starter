@@ -27,7 +27,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import me.chanjar.weixin.common.error.WxErrorException;
 
-public class WeiXinAuthenticationProvider implements AuthenticationProvider {
+public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
 	
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -36,7 +36,7 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
     private final WxMaService wxMaService;
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
     
-    public WeiXinAuthenticationProvider(final WxMaService wxMaService, final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
+    public WxJsCodeAuthenticationProvider(final WxMaService wxMaService, final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
         this.wxMaService = wxMaService;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
@@ -46,7 +46,7 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
      * 
      * <p>完成匹配Token的认证，这里返回的对象最终会通过：SecurityContextHolder.getContext().setAuthentication(authResult); 放置在上下文中</p>
      * @author 		：<a href="https://github.com/hiwepy">wandl</a>
-     * @param authentication  {@link WeiXinAuthenticationToken IdentityCodeAuthenticationToken} 对象
+     * @param authentication  {@link WxJsCodeAuthenticationToken IdentityCodeAuthenticationToken} 对象
      * @return 认证结果{@link Authentication}对象
      * @throws AuthenticationException  认证失败会抛出异常
      */
@@ -59,9 +59,9 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
 			logger.debug("Processing authentication request : " + authentication);
 		}
  
-    	WeiXinLoginRequest request = (WeiXinLoginRequest) authentication.getPrincipal();
+    	WxJsCodeLoginRequest loginRequest = (WxJsCodeLoginRequest) authentication.getPrincipal();
         
-        if (!StringUtils.hasLength(request.getJscode())) {
+        if (!StringUtils.hasLength(loginRequest.getJscode())) {
 			logger.debug("No jscode found in request.");
 			throw new BadCredentialsException("No jscode found in request.");
 		}
@@ -69,19 +69,19 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
         try {
         	
 			// 根据jscode获取会话信息
-			WxMaJscode2SessionResult sessionResult = getWxMaService().jsCode2SessionInfo(request.getJscode());
+			WxMaJscode2SessionResult sessionResult = getWxMaService().jsCode2SessionInfo(loginRequest.getJscode());
 			if (null == sessionResult) {
 				 
 			}
 			
-			WeiXinAuthenticationToken weixinToken = (WeiXinAuthenticationToken) authentication;
-			weixinToken.setOpenid(sessionResult.getOpenid());
-			weixinToken.setUnionid(sessionResult.getUnionid());
-			weixinToken.setSessionKey(sessionResult.getSessionKey());
+			WxJsCodeAuthenticationToken loginToken = (WxJsCodeAuthenticationToken) authentication;
+			loginToken.setOpenid(sessionResult.getOpenid());
+			loginToken.setUnionid(sessionResult.getUnionid());
+			loginToken.setSessionKey(sessionResult.getSessionKey());
 			
 			try {
 				
-				UserDetails ud = getUserDetailsService().loadUserDetails(weixinToken);
+				UserDetails ud = getUserDetailsService().loadUserDetails(loginToken);
 				
 				// 判断是否已经完成绑定
 				if (null == ud) {
@@ -91,11 +91,11 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
 				// User Status Check
 			    getUserDetailsChecker().check(ud);
 			    
-			    WeiXinAuthenticationToken authenticationToken = null;
+			    WxJsCodeAuthenticationToken authenticationToken = null;
 			    if(SecurityPrincipal.class.isAssignableFrom(ud.getClass())) {
-			    	authenticationToken = new WeiXinAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
+			    	authenticationToken = new WxJsCodeAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
 			    } else {
-			    	authenticationToken = new WeiXinAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
+			    	authenticationToken = new WxJsCodeAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
 				}
 			    authenticationToken.setDetails(authentication.getDetails());
 			    
@@ -103,29 +103,33 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
 			    
 			} catch (UsernameNotFoundException e) {
 				
-				// 解密手机号码信息
-				WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(sessionResult.getSessionKey(), request.getEncryptedData(), request.getIv());
-				if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
-					weixinToken.setPhoneNumberInfo(phoneNumberInfo);
-			    }
-				
-			 	// 解密用户信息
-				WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(sessionResult.getSessionKey(), request.getEncryptedData(), request.getIv() );
-			    if (null == userInfo) {
-			    	weixinToken.setUserInfo(userInfo);
-			    }
+				if(StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv()) ) {
+					
+					// 解密手机号码信息
+					WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
+					if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
+						loginToken.setPhoneNumberInfo(phoneNumberInfo);
+				    }
+					
+				 	// 解密用户信息
+					WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
+				    if (null == userInfo) {
+				    	loginToken.setUserInfo(userInfo);
+				    }
+				    
+				}
 				
 			    // 调用保存和返回保存后认证信息接口
-			    UserDetails ud = getUserDetailsService().loadUserDetailsWithSave(weixinToken);
+			    UserDetails ud = getUserDetailsService().loadUserDetailsWithSave(loginToken);
 			    
 			    // User Status Check
 			    getUserDetailsChecker().check(ud);
 			    
-			    WeiXinAuthenticationToken authenticationToken = null;
+			    WxJsCodeAuthenticationToken authenticationToken = null;
 			    if(SecurityPrincipal.class.isAssignableFrom(ud.getClass())) {
-			    	authenticationToken = new WeiXinAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
+			    	authenticationToken = new WxJsCodeAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
 			    } else {
-			    	authenticationToken = new WeiXinAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
+			    	authenticationToken = new WxJsCodeAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
 				}
 			    authenticationToken.setDetails(authentication.getDetails());
 			    
@@ -139,7 +143,7 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return (WeiXinAuthenticationToken.class.isAssignableFrom(authentication));
+        return (WxJsCodeAuthenticationToken.class.isAssignableFrom(authentication));
     }
 
 	public void setUserDetailsChecker(UserDetailsChecker userDetailsChecker) {

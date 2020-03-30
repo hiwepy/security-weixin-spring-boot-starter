@@ -23,7 +23,7 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 
-public class WeiXinAuthenticationToken extends AbstractAuthenticationToken {
+public class WxJsCodeAuthenticationToken extends AbstractAuthenticationToken {
     
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
     
@@ -51,14 +51,14 @@ public class WeiXinAuthenticationToken extends AbstractAuthenticationToken {
 	 */
 	protected WxMaUserInfo userInfo;
 	
-    public WeiXinAuthenticationToken(Object principal, String credentials) {
+    public WxJsCodeAuthenticationToken(Object principal, String credentials) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
         setAuthenticated(false);
     }
     
-    public WeiXinAuthenticationToken(Object principal,  Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public WxJsCodeAuthenticationToken(Object principal,  Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
         this.credentials = credentials;

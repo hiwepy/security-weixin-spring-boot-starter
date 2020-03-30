@@ -6,11 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@ConfigurationProperties(prefix = SecurityWeiXinProperties.PREFIX)
+@ConfigurationProperties(prefix = SecurityWxProperties.PREFIX)
 @Getter
 @Setter
 @ToString
-public class SecurityWeiXinProperties {
+public class SecurityWxProperties {
 
 	public static final String PREFIX = "spring.security.weixin";
 

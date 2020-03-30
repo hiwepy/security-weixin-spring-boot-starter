@@ -37,17 +37,25 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class WeiXinAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
-    public static final String SPRING_SECURITY_FORM_JSCODE_KEY = "jscode";
-
+	public static final String SPRING_SECURITY_FORM_JSCODE_KEY = "jscode";
+    public static final String SPRING_SECURITY_FORM_SIGNATURE_KEY = "signature";
+    public static final String SPRING_SECURITY_FORM_RAWDATA_KEY = "rawData";
+    public static final String SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY = "encryptedData";
+    public static final String SPRING_SECURITY_FORM_IV_KEY = "iv";
+	
     private String jscodeParameter = SPRING_SECURITY_FORM_JSCODE_KEY;
+    private String signatureParameter = SPRING_SECURITY_FORM_SIGNATURE_KEY;
+    private String rawDataParameter = SPRING_SECURITY_FORM_RAWDATA_KEY;
+    private String encryptedDataParameter = SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY;
+    private String ivParameter = SPRING_SECURITY_FORM_IV_KEY;
     private boolean postOnly = true;
 	private final ObjectMapper objectMapper;
 	
-    public WeiXinAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-    	super(new AntPathRequestMatcher("/login/identity"));
+    public WxJsCodeAuthenticationProcessingFilter(ObjectMapper objectMapper) {
+    	super(new AntPathRequestMatcher("/login/weixin/jscode"));
 		this.objectMapper = objectMapper;
     }
 
@@ -69,18 +77,34 @@ public class WeiXinAuthenticationProcessingFilter extends AbstractAuthentication
 			// Post && JSON
 			if(WebUtils.isObjectRequest(request)) {
 				
-				WeiXinLoginRequest loginRequest = objectMapper.readValue(request.getReader(), WeiXinLoginRequest.class);
-		 		authRequest = this.authenticationToken( loginRequest.getJscode() );
+				WxJsCodeLoginRequest loginRequest = objectMapper.readValue(request.getReader(), WxJsCodeLoginRequest.class);
+		 		authRequest = this.authenticationToken( loginRequest );
 		 		
 			} else {
 				
 		        String jscode = obtainJscode(request);
-
+		        String signature = obtainSignature(request);
+		        String rawData = obtainRawData(request); 
+		        String encryptedData = obtainEncryptedData(request); 
+		        String iv = obtainIv(request); 
+				
 		        if (jscode == null) {
 		        	jscode = "";
 		        }
+		        if (signature == null) {
+		        	signature = "";
+		        }
+		        if (rawData == null) {
+		        	rawData = "";
+		        }
+		        if (encryptedData == null) {
+		        	encryptedData = "";
+		        }
+		        if (iv == null) {
+		        	iv = "";
+		        }
 		        
-		 		authRequest = this.authenticationToken( jscode );
+		 		authRequest = this.authenticationToken( new WxJsCodeLoginRequest(jscode, signature, rawData, encryptedData, iv));
 		 		
 			}
 
@@ -99,10 +123,6 @@ public class WeiXinAuthenticationProcessingFilter extends AbstractAuthentication
 
     }
 
-    protected String obtainJscode(HttpServletRequest request) {
-        return request.getParameter(jscodeParameter);
-    }
-
     /**
 	 * Provided so that subclasses may configure what is put into the authentication
 	 * request's details property.
@@ -116,16 +136,68 @@ public class WeiXinAuthenticationProcessingFilter extends AbstractAuthentication
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 	}
 	
-	protected AbstractAuthenticationToken authenticationToken(String jscode) {
-		return new WeiXinAuthenticationToken( jscode, Boolean.TRUE.toString() );
+	protected AbstractAuthenticationToken authenticationToken(WxJsCodeLoginRequest loginRequest) {
+		return new WxJsCodeAuthenticationToken( loginRequest, Boolean.TRUE.toString() );
 	}
     
+	protected String obtainJscode(HttpServletRequest request) {
+        return request.getParameter(jscodeParameter);
+    }
+	
+	protected String obtainSignature(HttpServletRequest request) {
+        return request.getParameter(signatureParameter);
+    }
+	
+	protected String obtainRawData(HttpServletRequest request) {
+        return request.getParameter(rawDataParameter);
+    }
+	
+	protected String obtainEncryptedData(HttpServletRequest request) {
+        return request.getParameter(encryptedDataParameter);
+    }
+	
+    protected String obtainIv(HttpServletRequest request) {
+        return request.getParameter(ivParameter);
+    }
+
 	public String getJscodeParameter() {
 		return jscodeParameter;
 	}
 
 	public void setJscodeParameter(String jscodeParameter) {
 		this.jscodeParameter = jscodeParameter;
+	}
+
+	public String getSignatureParameter() {
+		return signatureParameter;
+	}
+
+	public void setSignatureParameter(String signatureParameter) {
+		this.signatureParameter = signatureParameter;
+	}
+
+	public String getRawDataParameter() {
+		return rawDataParameter;
+	}
+
+	public void setRawDataParameter(String rawDataParameter) {
+		this.rawDataParameter = rawDataParameter;
+	}
+
+	public String getEncryptedDataParameter() {
+		return encryptedDataParameter;
+	}
+
+	public void setEncryptedDataParameter(String encryptedDataParameter) {
+		this.encryptedDataParameter = encryptedDataParameter;
+	}
+
+	public String getIvParameter() {
+		return ivParameter;
+	}
+
+	public void setIvParameter(String ivParameter) {
+		this.ivParameter = ivParameter;
 	}
 
 	public boolean isPostOnly() {
