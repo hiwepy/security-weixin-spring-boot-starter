@@ -21,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import cn.binarywang.wx.miniapp.api.WxMaUserService;
+import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
@@ -33,15 +33,15 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceAdapter userDetailsService;
-    private final WxMaUserService wxMaUserService;
+    private final WxMaService wxMaService;
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
     
-    public WeiXinAuthenticationProvider(final WxMaUserService wxMaUserService, final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
-        this.wxMaUserService = wxMaUserService;
+    public WeiXinAuthenticationProvider(final WxMaService wxMaService, final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
+        this.wxMaService = wxMaService;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
-
+    
     /**
      * 
      * <p>完成匹配Token的认证，这里返回的对象最终会通过：SecurityContextHolder.getContext().setAuthentication(authResult); 放置在上下文中</p>
@@ -69,7 +69,7 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
         try {
         	
 			// 根据jscode获取会话信息
-			WxMaJscode2SessionResult sessionResult = getWxMaUserService().getSessionInfo(request.getJscode());
+			WxMaJscode2SessionResult sessionResult = getWxMaService().jsCode2SessionInfo(request.getJscode());
 			if (null == sessionResult) {
 				 
 			}
@@ -104,13 +104,13 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
 			} catch (UsernameNotFoundException e) {
 				
 				// 解密手机号码信息
-				WxMaPhoneNumberInfo phoneNumberInfo = getWxMaUserService().getPhoneNoInfo(sessionResult.getSessionKey(), request.getEncryptedData(), request.getIv());
+				WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(sessionResult.getSessionKey(), request.getEncryptedData(), request.getIv());
 				if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
 					weixinToken.setPhoneNumberInfo(phoneNumberInfo);
 			    }
 				
 			 	// 解密用户信息
-				WxMaUserInfo userInfo = getWxMaUserService().getUserInfo(sessionResult.getSessionKey(), request.getEncryptedData(), request.getIv() );
+				WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(sessionResult.getSessionKey(), request.getEncryptedData(), request.getIv() );
 			    if (null == userInfo) {
 			    	weixinToken.setUserInfo(userInfo);
 			    }
@@ -146,8 +146,8 @@ public class WeiXinAuthenticationProvider implements AuthenticationProvider {
 		this.userDetailsChecker = userDetailsChecker;
 	}
 
-	public WxMaUserService getWxMaUserService() {
-		return wxMaUserService;
+	public WxMaService getWxMaService() {
+		return wxMaService;
 	}
 	
 	public UserDetailsChecker getUserDetailsChecker() {

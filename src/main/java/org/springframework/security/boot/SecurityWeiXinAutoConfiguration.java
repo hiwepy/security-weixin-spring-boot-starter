@@ -11,7 +11,7 @@ import org.springframework.security.boot.weixin.authentication.WeiXinMatchedAuth
 import org.springframework.security.boot.weixin.authentication.WeiXinMatchedAuthenticationFailureHandler;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import cn.binarywang.wx.miniapp.api.WxMaUserService;
+import cn.binarywang.wx.miniapp.api.WxMaService;
 
 @Configuration
 @AutoConfigureBefore(SecurityBizAutoConfiguration.class)
@@ -30,9 +30,9 @@ public class SecurityWeiXinAutoConfiguration{
 	}
 	
 	@Bean
-	public WeiXinAuthenticationProvider weixinAuthenticationProvider(WxMaUserService wxMaUserService,
+	public WeiXinAuthenticationProvider weixinAuthenticationProvider(WxMaService wxMaService,
 			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
-		return new WeiXinAuthenticationProvider(wxMaUserService, userDetailsService, passwordEncoder);
+		return new WeiXinAuthenticationProvider(wxMaService, userDetailsService, passwordEncoder);
 	}
 	
 }
