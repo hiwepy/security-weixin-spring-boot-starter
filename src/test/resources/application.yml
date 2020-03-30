@@ -1,7 +1,7 @@
 spring:
   # Spring Security 配置
   security:
-             # 默认路径拦截规则定义
+    # 默认路径拦截规则定义
     filter-chain-definition-map:
        '[/]' : anon
        '[/**/favicon.ico]' : anon
@@ -22,18 +22,21 @@ spring:
        '[/monitoring2]' : roles[1,admin]
        '[/monitoring3]' : perms[1,admin]
        '[/monitoring4]' : perms[1]
-    jwt:
+    weixin:
       enabled: true
       authc:
         continue-chain-before-successful-authentication: false
-        login-url-pattern: /login/jwt
-        password-parameter: pwd
+        jscode-parameter: jscode
+        path-pattern: /login/weixin
         post-only: true
-        use-forward: false
-      authz:        allow-session-creation: false
-        continue-chain-before-successful-authentication: true
-        path-pattern: /**
-        
-      
-      
-      
+
+################################################################################################################
+### 微信对接配置：
+################################################################################################################
+wx:
+  miniapp:
+    appid: xxx # 微信小程序的appid
+    secret: xxx  #微信小程序的Secret
+    token: #微信小程序消息服务器配置的token
+    aesKey: #微信小程序消息服务器配置的EncodingAESKey
+    msgDataFormat: JSON
