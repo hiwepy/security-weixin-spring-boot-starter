@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
@@ -37,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 
 @Configuration
+@ConditionalOnClass(WxMaService.class)
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 @EnableConfigurationProperties({ SecurityWxProperties.class })
 public class SecurityWxJsCodeFilterConfiguration {
