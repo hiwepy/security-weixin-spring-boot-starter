@@ -20,7 +20,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
-import org.springframework.security.boot.sms.authentication.WeiXinAuthenticationProcessingFilter;
+import org.springframework.security.boot.weixin.authentication.WeiXinAuthenticationProcessingFilter;
 
 import lombok.Getter;
 import lombok.Setter;

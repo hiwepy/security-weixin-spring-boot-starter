@@ -1,32 +1,31 @@
-package org.springframework.security.boot.sms.exception;
+package org.springframework.security.boot.weixin.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
 @SuppressWarnings("serial")
-public class WeiXinCodeNotFoundException extends AuthenticationException {
+public class WeiXinCodeIncorrectException extends AuthenticationException {
 
 	// ~ Constructors
 	// ===================================================================================================
 
 	/**
-	 * Constructs an <code>IdentityCodeNotFoundException</code> with the specified
+	 * Constructs an <code>IdentityCodeIncorrectException</code> with the specified
 	 * message.
 	 *
 	 * @param msg the detail message
 	 */
-	public WeiXinCodeNotFoundException(String msg) {
+	public WeiXinCodeIncorrectException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Constructs an <code>IdentityCodeNotFoundException</code> with the specified
+	 * Constructs an <code>IdentityCodeIncorrectException</code> with the specified
 	 * message and root cause.
 	 *
 	 * @param msg the detail message
 	 * @param t   root cause
 	 */
-	public WeiXinCodeNotFoundException(String msg, Throwable t) {
+	public WeiXinCodeIncorrectException(String msg, Throwable t) {
 		super(msg, t);
 	}
-
 }

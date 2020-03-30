@@ -18,8 +18,8 @@ import org.springframework.security.boot.biz.authentication.captcha.CaptchaResol
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
-import org.springframework.security.boot.sms.authentication.WeiXinAuthenticationProcessingFilter;
-import org.springframework.security.boot.sms.authentication.WeiXinAuthenticationProvider;
+import org.springframework.security.boot.weixin.authentication.WeiXinAuthenticationProcessingFilter;
+import org.springframework.security.boot.weixin.authentication.WeiXinAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;

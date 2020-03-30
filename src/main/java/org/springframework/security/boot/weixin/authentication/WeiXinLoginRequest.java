@@ -1,4 +1,4 @@
-package org.springframework.security.boot.sms.authentication;
+package org.springframework.security.boot.weixin.authentication;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
