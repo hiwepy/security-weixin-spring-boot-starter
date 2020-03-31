@@ -39,6 +39,7 @@ import me.chanjar.weixin.mp.api.WxMpService;
 
 @Configuration
 @ConditionalOnClass(WxMpService.class)
+@ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 @EnableConfigurationProperties({ SecurityWxProperties.class })
 public class SecurityWxMpFilterConfiguration {

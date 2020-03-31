@@ -39,6 +39,7 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 
 @Configuration
 @ConditionalOnClass(WxMaService.class)
+@ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 @EnableConfigurationProperties({ SecurityWxProperties.class })
 public class SecurityWxJsCodeFilterConfiguration {
