@@ -31,12 +31,23 @@ spring:
         post-only: true
 
 ################################################################################################################
-### 微信对接配置：
+###  微信公众号/服务号/小程序配置：
 ################################################################################################################
 wx:
+  mp:
+    # 微信公众号的appid.
+    app-id: xxx
+    # 微信公众号的app secret.
+    secret: xxx
+    # 配置存储
+    config-storage:
+      type: memory
   miniapp:
-    appid: xxx # 微信小程序的appid
-    secret: xxx  #微信小程序的Secret
+    # 微信小程序的appid.
+    appid: xxx
+    # 微信小程序的Secret.
+    secret: xxx
     token: #微信小程序消息服务器配置的token
     aesKey: #微信小程序消息服务器配置的EncodingAESKey
-    msgDataFormat: JSON
+    # 消息格式，XML或者JSON.
+    msg-data-format: JSON
