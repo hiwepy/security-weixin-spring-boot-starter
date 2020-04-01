@@ -15,35 +15,21 @@
  */
 package org.springframework.security.boot.weixin.exception;
 
-
 import org.springframework.security.core.AuthenticationException;
 
 /**
- *
+ * TODO
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
-@SuppressWarnings("serial")
-public class AuthenticationCaptchaExpiredException extends AuthenticationException {
-	// ~ Constructors
-	// ===================================================================================================
 
-	/**
-	 * Constructs an <code>AuthenticationCaptchaExpiredException</code> with the
-	 * specified message.
-	 *
-	 * @param msg the detail message
-	 */
-	public AuthenticationCaptchaExpiredException(String msg) {
+public class WxAuthenticationException extends AuthenticationException {
+
+	public WxAuthenticationException(String msg) {
 		super(msg);
 	}
-
-	/**
-	 * Constructs an <code>AuthenticationCaptchaExpiredException</code> with the
-	 * specified message and root cause.
-	 *
-	 * @param msg the detail message
-	 * @param t root cause
-	 */
-	public AuthenticationCaptchaExpiredException(String msg, Throwable t) {
+	
+	public WxAuthenticationException(String msg, Throwable t) {
 		super(msg, t);
 	}
+	
 }

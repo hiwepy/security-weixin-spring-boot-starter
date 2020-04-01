@@ -16,7 +16,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -79,62 +78,37 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
 			loginToken.setUnionid(sessionResult.getUnionid());
 			loginToken.setSessionKey(sessionResult.getSessionKey());
 			
-			try {
+			if(StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv()) ) {
 				
-				UserDetails ud = getUserDetailsService().loadUserDetails(loginToken);
+				// 解密手机号码信息
+				WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
+				if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
+					loginToken.setPhoneNumberInfo(phoneNumberInfo);
+			    }
 				
-				// 判断是否已经完成绑定
-				if (null == ud) {
-			    	throw new UsernameNotFoundException(".");
-				}
+			 	// 解密用户信息
+				WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
+			    if (null == userInfo) {
+			    	loginToken.setUserInfo(userInfo);
+			    }
 			    
-				// User Status Check
-			    getUserDetailsChecker().check(ud);
-			    
-			    WxJsCodeAuthenticationToken authenticationToken = null;
-			    if(SecurityPrincipal.class.isAssignableFrom(ud.getClass())) {
-			    	authenticationToken = new WxJsCodeAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
-			    } else {
-			    	authenticationToken = new WxJsCodeAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
-				}
-			    authenticationToken.setDetails(authentication.getDetails());
-			    
-			    return authenticationToken;
-			    
-			} catch (UsernameNotFoundException e) {
-				
-				if(StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv()) ) {
-					
-					// 解密手机号码信息
-					WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
-					if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
-						loginToken.setPhoneNumberInfo(phoneNumberInfo);
-				    }
-					
-				 	// 解密用户信息
-					WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
-				    if (null == userInfo) {
-				    	loginToken.setUserInfo(userInfo);
-				    }
-				    
-				}
-				
-			    // 调用保存和返回保存后认证信息接口
-			    UserDetails ud = getUserDetailsService().loadUserDetailsWithSave(loginToken);
-			    
-			    // User Status Check
-			    getUserDetailsChecker().check(ud);
-			    
-			    WxJsCodeAuthenticationToken authenticationToken = null;
-			    if(SecurityPrincipal.class.isAssignableFrom(ud.getClass())) {
-			    	authenticationToken = new WxJsCodeAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
-			    } else {
-			    	authenticationToken = new WxJsCodeAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
-				}
-			    authenticationToken.setDetails(authentication.getDetails());
-			    
-			    return authenticationToken;
 			}
+
+			UserDetails ud = getUserDetailsService().loadUserDetails(loginToken);
+			
+			// User Status Check
+		    getUserDetailsChecker().check(ud);
+		    
+		    WxJsCodeAuthenticationToken authenticationToken = null;
+		    if(SecurityPrincipal.class.isAssignableFrom(ud.getClass())) {
+		    	authenticationToken = new WxJsCodeAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
+		    } else {
+		    	authenticationToken = new WxJsCodeAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
+			}
+		    authenticationToken.setDetails(authentication.getDetails());
+		    
+		    return authenticationToken;
+			    
 		} catch (WxErrorException e) {
 			throw new AuthenticationServiceException("微信登录认证失败.", e);
 		}

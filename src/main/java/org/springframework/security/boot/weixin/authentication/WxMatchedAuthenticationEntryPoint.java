@@ -30,10 +30,11 @@ import org.springframework.security.boot.biz.authentication.nested.MatchedAuthen
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.utils.SubjectUtils;
-import org.springframework.security.boot.weixin.exception.WeiXinCodeExpiredException;
-import org.springframework.security.boot.weixin.exception.WeiXinCodeIncorrectException;
-import org.springframework.security.boot.weixin.exception.WeiXinCodeInvalidException;
-import org.springframework.security.boot.weixin.exception.WeiXinCodeNotFoundException;
+import org.springframework.security.boot.weixin.exception.WxJsCodeBoundNotFoundException;
+import org.springframework.security.boot.weixin.exception.WxJsCodeExpiredException;
+import org.springframework.security.boot.weixin.exception.WxJsCodeIncorrectException;
+import org.springframework.security.boot.weixin.exception.WxJsCodeInvalidException;
+import org.springframework.security.boot.weixin.exception.WxMpBoundNotFoundException;
 import org.springframework.security.core.AuthenticationException;
 
 import com.alibaba.fastjson.JSONObject;
@@ -44,9 +45,9 @@ public class WxMatchedAuthenticationEntryPoint implements MatchedAuthenticationE
 	
 	@Override
 	public boolean supports(AuthenticationException e) {
-		return SubjectUtils.isAssignableFrom(e.getClass(), WeiXinCodeNotFoundException.class,
-				WeiXinCodeExpiredException.class, WeiXinCodeIncorrectException.class,
-				WeiXinCodeInvalidException.class);
+		return SubjectUtils.isAssignableFrom(e.getClass(), WxMpBoundNotFoundException.class,
+				WxJsCodeExpiredException.class, WxJsCodeIncorrectException.class,
+				WxJsCodeInvalidException.class);
 	}
 
 	@Override
@@ -57,16 +58,19 @@ public class WxMatchedAuthenticationEntryPoint implements MatchedAuthenticationE
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
 		
-		if (e instanceof WeiXinCodeNotFoundException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHZ_CODE_REQUIRED.getCode(), 
-					messages.getMessage(AuthResponseCode.SC_AUTHZ_CODE_REQUIRED.getMsgKey(), e.getMessage())));
-		} else if (e instanceof WeiXinCodeExpiredException) {
+		if (e instanceof WxMpBoundNotFoundException) {
+			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_BOUND_NOT_FOUND.getCode(), 
+					messages.getMessage(AuthResponseCode.SC_AUTHC_BOUND_NOT_FOUND.getMsgKey(), e.getMessage())));
+		} else if (e instanceof WxJsCodeBoundNotFoundException) {
+			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_BOUND_NOT_FOUND.getCode(), 
+					messages.getMessage(AuthResponseCode.SC_AUTHC_BOUND_NOT_FOUND.getMsgKey(), e.getMessage())));
+		} else if (e instanceof WxJsCodeExpiredException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHZ_CODE_EXPIRED.getCode(), 
 					messages.getMessage(AuthResponseCode.SC_AUTHZ_CODE_EXPIRED.getMsgKey(), e.getMessage())));
-		} else if (e instanceof WeiXinCodeInvalidException) {
+		} else if (e instanceof WxJsCodeInvalidException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHZ_CODE_INVALID.getCode(), 
 					messages.getMessage(AuthResponseCode.SC_AUTHZ_CODE_INVALID.getMsgKey(), e.getMessage())));
-		} else if (e instanceof WeiXinCodeIncorrectException) {
+		} else if (e instanceof WxJsCodeIncorrectException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHZ_CODE_INCORRECT.getCode(), 
 					messages.getMessage(AuthResponseCode.SC_AUTHZ_CODE_INCORRECT.getMsgKey(), e.getMessage())));
 		} else {
