@@ -104,7 +104,7 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 		        	iv = "";
 		        }
 		        
-		 		authRequest = this.authenticationToken( new WxJsCodeLoginRequest(jscode, signature, rawData, encryptedData, iv));
+		 		authRequest = this.authenticationToken( new WxJsCodeLoginRequest(jscode, signature, rawData, encryptedData, iv, null));
 		 		
 			}
 

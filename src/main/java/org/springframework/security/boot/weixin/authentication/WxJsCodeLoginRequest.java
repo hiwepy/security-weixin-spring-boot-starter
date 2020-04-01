@@ -18,6 +18,8 @@ package org.springframework.security.boot.weixin.authentication;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
+
 /**
  * 微信小程序 Login Request
  * 
@@ -45,16 +47,21 @@ public class WxJsCodeLoginRequest {
 	 * 加密算法的初始向量
 	 */
 	protected String iv;
+	/**
+	 * 用户信息
+	 */
+	protected WxMaUserInfo userInfo;
 
 	@JsonCreator
 	public WxJsCodeLoginRequest(@JsonProperty("jscode") String jscode, @JsonProperty("signature") String signature,
 			@JsonProperty("rawData") String rawData, @JsonProperty("encryptedData") String encryptedData, 
-			@JsonProperty("iv") String iv) {
+			@JsonProperty("iv") String iv, @JsonProperty("userInfo") WxMaUserInfo userInfo) {
 		this.jscode = jscode;
 		this.signature = signature;
 		this.rawData = rawData;
 		this.encryptedData = encryptedData;
 		this.iv = iv;
+		this.userInfo = userInfo;
 	}
 	
 	public String getJscode() {
@@ -95,6 +102,14 @@ public class WxJsCodeLoginRequest {
 
 	public void setIv(String iv) {
 		this.iv = iv;
+	}
+
+	public WxMaUserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(WxMaUserInfo userInfo) {
+		this.userInfo = userInfo;
 	}
 
 }
