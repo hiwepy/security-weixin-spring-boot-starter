@@ -117,6 +117,8 @@ public class SecurityWxJsCodeFilterConfiguration {
 			map.from(authcProperties.getRawDataParameter()).to(authenticationFilter::setRawDataParameter);
 			map.from(authcProperties.getEncryptedDataParameter()).to(authenticationFilter::setEncryptedDataParameter);
 			map.from(authcProperties.getIvParameter()).to(authenticationFilter::setIvParameter);
+			map.from(authcProperties.getUsernameParameter()).to(authenticationFilter::setUsernameParameter);
+			map.from(authcProperties.getPasswordParameter()).to(authenticationFilter::setPasswordParameter);
 			
 			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
 			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);

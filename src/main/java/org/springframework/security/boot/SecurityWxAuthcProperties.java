@@ -49,6 +49,10 @@ public class SecurityWxAuthcProperties extends SecurityAuthcProperties {
     private String unionidParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_UNIONID_KEY;
     /** the openid parameter name. Defaults to "openid". */
     private String openidParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_OPENID_KEY;
+    /** the username parameter name. Defaults to "username". */
+    private String usernameParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
+    /** the password parameter name. Defaults to "password". */
+    private String passwordParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
     
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();

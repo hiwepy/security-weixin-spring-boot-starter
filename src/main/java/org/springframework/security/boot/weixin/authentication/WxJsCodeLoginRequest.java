@@ -48,6 +48,14 @@ public class WxJsCodeLoginRequest {
 	 */
 	protected String iv;
 	/**
+	 * 绑定的账号
+	 */
+	protected String username;
+	/**
+	 * 绑定的账号密码
+	 */
+	protected String password;
+	/**
 	 * 用户信息
 	 */
 	protected WxMaUserInfo userInfo;
@@ -55,7 +63,9 @@ public class WxJsCodeLoginRequest {
 	@JsonCreator
 	public WxJsCodeLoginRequest(@JsonProperty("jscode") String jscode, @JsonProperty("signature") String signature,
 			@JsonProperty("rawData") String rawData, @JsonProperty("encryptedData") String encryptedData, 
-			@JsonProperty("iv") String iv, @JsonProperty("userInfo") WxMaUserInfo userInfo) {
+			@JsonProperty("iv") String iv, @JsonProperty("username") String username ,
+			@JsonProperty("password") String password , @JsonProperty("userInfo") WxMaUserInfo userInfo) {
+		
 		this.jscode = jscode;
 		this.signature = signature;
 		this.rawData = rawData;
@@ -102,6 +112,22 @@ public class WxJsCodeLoginRequest {
 
 	public void setIv(String iv) {
 		this.iv = iv;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public WxMaUserInfo getUserInfo() {

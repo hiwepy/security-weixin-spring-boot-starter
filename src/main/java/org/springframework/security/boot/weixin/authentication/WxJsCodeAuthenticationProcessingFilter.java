@@ -45,12 +45,18 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
     public static final String SPRING_SECURITY_FORM_RAWDATA_KEY = "rawData";
     public static final String SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY = "encryptedData";
     public static final String SPRING_SECURITY_FORM_IV_KEY = "iv";
+    public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
+    public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
 	
     private String jscodeParameter = SPRING_SECURITY_FORM_JSCODE_KEY;
     private String signatureParameter = SPRING_SECURITY_FORM_SIGNATURE_KEY;
     private String rawDataParameter = SPRING_SECURITY_FORM_RAWDATA_KEY;
     private String encryptedDataParameter = SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY;
     private String ivParameter = SPRING_SECURITY_FORM_IV_KEY;
+    private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
+    private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
+    
+    
     private boolean postOnly = true;
 	private final ObjectMapper objectMapper;
 	
@@ -86,7 +92,9 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 		        String signature = obtainSignature(request);
 		        String rawData = obtainRawData(request); 
 		        String encryptedData = obtainEncryptedData(request); 
-		        String iv = obtainIv(request); 
+		        String iv = obtainIv(request);
+		        String username = obtainUsername(request); 
+		        String password = obtainPassword(request); 
 				
 		        if (jscode == null) {
 		        	jscode = "";
@@ -103,8 +111,14 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 		        if (iv == null) {
 		        	iv = "";
 		        }
-		        
-		 		authRequest = this.authenticationToken( new WxJsCodeLoginRequest(jscode, signature, rawData, encryptedData, iv, null));
+		        if (username == null) {
+		        	username = "";
+		        }
+		        if (password == null) {
+		        	password = "";
+		        }
+		 		authRequest = this.authenticationToken( new WxJsCodeLoginRequest(jscode, signature, rawData, encryptedData, 
+		 				iv, username, password, null));
 		 		
 			}
 
@@ -155,9 +169,17 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 	protected String obtainEncryptedData(HttpServletRequest request) {
         return request.getParameter(encryptedDataParameter);
     }
-	
+
     protected String obtainIv(HttpServletRequest request) {
         return request.getParameter(ivParameter);
+    }
+    
+    protected String obtainUsername(HttpServletRequest request) {
+        return request.getParameter(usernameParameter);
+    }
+    
+    protected String obtainPassword(HttpServletRequest request) {
+        return request.getParameter(passwordParameter);
     }
 
 	public String getJscodeParameter() {
@@ -198,6 +220,22 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 
 	public void setIvParameter(String ivParameter) {
 		this.ivParameter = ivParameter;
+	}
+
+	public String getUsernameParameter() {
+		return usernameParameter;
+	}
+
+	public void setUsernameParameter(String usernameParameter) {
+		this.usernameParameter = usernameParameter;
+	}
+
+	public String getPasswordParameter() {
+		return passwordParameter;
+	}
+
+	public void setPasswordParameter(String passwordParameter) {
+		this.passwordParameter = passwordParameter;
 	}
 
 	public boolean isPostOnly() {

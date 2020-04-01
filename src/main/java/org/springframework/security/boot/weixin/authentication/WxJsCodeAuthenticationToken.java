@@ -114,7 +114,7 @@ public class WxJsCodeAuthenticationToken extends AbstractAuthenticationToken {
 	public void setSessionKey(String sessionKey) {
 		this.sessionKey = sessionKey;
 	}
-
+ 
 	public WxMaPhoneNumberInfo getPhoneNumberInfo() {
 		return phoneNumberInfo;
 	}
