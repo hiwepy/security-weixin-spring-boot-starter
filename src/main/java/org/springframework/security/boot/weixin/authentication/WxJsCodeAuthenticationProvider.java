@@ -8,7 +8,6 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.core.Authentication;
@@ -60,34 +59,31 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
  
     	WxJsCodeLoginRequest loginRequest = (WxJsCodeLoginRequest) authentication.getPrincipal();
         
-        if (!StringUtils.hasLength(loginRequest.getJscode())) {
-			logger.debug("No jscode found in request.");
-			throw new BadCredentialsException("No jscode found in request.");
-		}
-
+       
         try {
         	
-			// 根据jscode获取会话信息
-			WxMaJscode2SessionResult sessionResult = getWxMaService().jsCode2SessionInfo(loginRequest.getJscode());
-			if (null == sessionResult) {
-				 
-			}
+        	WxJsCodeAuthenticationToken loginToken = (WxJsCodeAuthenticationToken) authentication;
 			
-			WxJsCodeAuthenticationToken loginToken = (WxJsCodeAuthenticationToken) authentication;
-			loginToken.setOpenid(sessionResult.getOpenid());
-			loginToken.setUnionid(sessionResult.getUnionid());
-			loginToken.setSessionKey(sessionResult.getSessionKey());
+        	// 表示需要根据jscode获取会话信息
+        	if (!StringUtils.hasText(loginRequest.getSessionKey()) && StringUtils.hasText(loginRequest.getJscode()) ) {
+        		WxMaJscode2SessionResult sessionResult = getWxMaService().jsCode2SessionInfo(loginRequest.getJscode());
+    			if (null != sessionResult) {
+    				loginToken.setOpenid(sessionResult.getOpenid());
+    				loginToken.setUnionid(sessionResult.getUnionid());
+    				loginToken.setSessionKey(sessionResult.getSessionKey());
+    			}
+     		}
 			
-			if(StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv()) ) {
+			if(StringUtils.hasText(loginRequest.getSessionKey()) && StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv()) ) {
 				// 解密手机号码信息
-				WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
+				WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(loginRequest.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
 				if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
 					loginToken.setPhoneNumberInfo(phoneNumberInfo);
 			    }
 			}
-			if(Objects.isNull(loginRequest.getUserInfo()) && StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv())) {
+			if(Objects.isNull(loginRequest.getUserInfo()) && StringUtils.hasText(loginRequest.getSessionKey()) && StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv())) {
 				// 解密用户信息
-				WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
+				WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(loginRequest.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
 			    if (null == userInfo) {
 			    	loginToken.setUserInfo(userInfo);
 			    }

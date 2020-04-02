@@ -41,6 +41,9 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	public static final String SPRING_SECURITY_FORM_JSCODE_KEY = "jscode";
+	public static final String SPRING_SECURITY_FORM_SESSIONKEY_KEY = "sessionKey";
+	public static final String SPRING_SECURITY_FORM_UNIONID_KEY = "unionid";
+	public static final String SPRING_SECURITY_FORM_OPENID_KEY = "openid";
     public static final String SPRING_SECURITY_FORM_SIGNATURE_KEY = "signature";
     public static final String SPRING_SECURITY_FORM_RAWDATA_KEY = "rawData";
     public static final String SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY = "encryptedData";
@@ -49,6 +52,9 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
     public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
 	
     private String jscodeParameter = SPRING_SECURITY_FORM_JSCODE_KEY;
+    private String sessionKeyParameter = SPRING_SECURITY_FORM_SESSIONKEY_KEY;
+    private String unionidParameter = SPRING_SECURITY_FORM_UNIONID_KEY;
+    private String openidParameter = SPRING_SECURITY_FORM_OPENID_KEY;
     private String signatureParameter = SPRING_SECURITY_FORM_SIGNATURE_KEY;
     private String rawDataParameter = SPRING_SECURITY_FORM_RAWDATA_KEY;
     private String encryptedDataParameter = SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY;
@@ -89,6 +95,9 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 			} else {
 				
 		        String jscode = obtainJscode(request);
+		        String sessionKey = obtainSessionKey(request);
+		        String unionid = obtainUnionid(request);
+		        String openid = obtainOpenid(request);
 		        String signature = obtainSignature(request);
 		        String rawData = obtainRawData(request); 
 		        String encryptedData = obtainEncryptedData(request); 
@@ -98,6 +107,15 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 				
 		        if (jscode == null) {
 		        	jscode = "";
+		        }
+		        if (sessionKey == null) {
+		        	sessionKey = "";
+		        }
+		        if (unionid == null) {
+		        	unionid = "";
+		        }
+		        if (openid == null) {
+		        	openid = "";
 		        }
 		        if (signature == null) {
 		        	signature = "";
@@ -117,8 +135,8 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 		        if (password == null) {
 		        	password = "";
 		        }
-		 		authRequest = this.authenticationToken( new WxJsCodeLoginRequest(jscode, signature, rawData, encryptedData, 
-		 				iv, username, password, null));
+		 		authRequest = this.authenticationToken( new WxJsCodeLoginRequest(jscode, sessionKey, unionid, openid, 
+		 				signature, rawData, encryptedData, iv, username, password, null));
 		 		
 			}
 
@@ -157,6 +175,19 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 	protected String obtainJscode(HttpServletRequest request) {
         return request.getParameter(jscodeParameter);
     }
+	
+	protected String obtainSessionKey(HttpServletRequest request) {
+        return request.getParameter(sessionKeyParameter);
+    }
+	
+	protected String obtainUnionid(HttpServletRequest request) {
+        return request.getParameter(unionidParameter);
+    }
+	
+	protected String obtainOpenid(HttpServletRequest request) {
+        return request.getParameter(openidParameter);
+    }
+	
 	
 	protected String obtainSignature(HttpServletRequest request) {
         return request.getParameter(signatureParameter);
