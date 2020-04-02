@@ -43,7 +43,6 @@ import me.chanjar.weixin.mp.api.WxMpService;
 @ConditionalOnClass(WxMpService.class)
 @ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
-@EnableConfigurationProperties({ SecurityWxProperties.class })
 public class SecurityWxMpFilterConfiguration {
     
 	@Bean
@@ -53,7 +52,7 @@ public class SecurityWxMpFilterConfiguration {
 	}
 	
     @Configuration
-   	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityBizProperties.class })
+   	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxAuthcProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 7)
    	static class WxMpWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	

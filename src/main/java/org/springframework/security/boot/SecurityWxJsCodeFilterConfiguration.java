@@ -43,7 +43,6 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 @ConditionalOnClass(WxMaService.class)
 @ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
-@EnableConfigurationProperties({ SecurityWxProperties.class })
 public class SecurityWxJsCodeFilterConfiguration {
     
 	@Bean
@@ -53,7 +52,7 @@ public class SecurityWxJsCodeFilterConfiguration {
 	}
 	
     @Configuration
-   	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityBizProperties.class })
+    @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxAuthcProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 6)
    	static class WxJsCodeWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
