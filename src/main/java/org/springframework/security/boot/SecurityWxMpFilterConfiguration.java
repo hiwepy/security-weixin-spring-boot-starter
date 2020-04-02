@@ -26,12 +26,14 @@ import org.springframework.security.boot.weixin.authentication.WxMpAuthenticatio
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.savedrequest.RequestCache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,20 +53,21 @@ public class SecurityWxMpFilterConfiguration {
 	}
 	
     @Configuration
-    @ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
    	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityBizProperties.class })
-    @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 4)
-   	static class IdentityWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
+    @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 7)
+   	static class WxMpWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
     	private final SecurityWxAuthcProperties authcProperties;
     	
- 	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
- 	    private final AuthenticationFailureHandler authenticationFailureHandler;
- 	    private final ObjectMapper objectMapper;
-     	private final RememberMeServices rememberMeServices;
- 		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
+    	private final AuthenticationEntryPoint authenticationEntryPoint;
+  	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
+  	    private final AuthenticationFailureHandler authenticationFailureHandler;
+  	    private final ObjectMapper objectMapper;
+      	private final RequestCache requestCache;
+      	private final RememberMeServices rememberMeServices;
+  		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
    		
-   		public IdentityWebSecurityConfigurerAdapter(
+   		public WxMpWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
    				SecurityWxAuthcProperties authcProperties,
@@ -87,9 +90,11 @@ public class SecurityWxMpFilterConfiguration {
    			this.authcProperties = authcProperties;
    			
    			List<AuthenticationListener> authenticationListeners = authenticationListenerProvider.stream().collect(Collectors.toList());
+   			this.authenticationEntryPoint = super.authenticationEntryPoint(authenticationEntryPointProvider.stream().collect(Collectors.toList()));
    			this.authenticationSuccessHandler = super.authenticationSuccessHandler(authenticationListeners, authenticationSuccessHandlerProvider.stream().collect(Collectors.toList()));
    			this.authenticationFailureHandler = super.authenticationFailureHandler(authenticationListeners, authenticationFailureHandlerProvider.stream().collect(Collectors.toList()));
    			this.objectMapper = objectMapperProvider.getIfAvailable();
+   			this.requestCache = super.requestCache();
    			this.rememberMeServices = super.rememberMeServices();
    			this.sessionAuthenticationStrategy = super.sessionAuthenticationStrategy();
    			
@@ -124,19 +129,29 @@ public class SecurityWxMpFilterConfiguration {
 
    	    @Override
 		public void configure(HttpSecurity http) throws Exception {
-   	    	
-   	    	http.csrf().disable(); // We don't need CSRF for Mobile Code based authentication
-   	    	http.antMatcher(authcProperties.getPathPattern())
-   	    		.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+			
+		    // Session 管理器配置
+	    	http.requestCache()
+	        	.requestCache(requestCache)
+	        	// 异常处理
+	        	.and()
+	        	.exceptionHandling()
+	        	.authenticationEntryPoint(authenticationEntryPoint)
+	        	.and()
+	        	.httpBasic()
+	        	.authenticationEntryPoint(authenticationEntryPoint)
+	        	.and()
+	        	.antMatcher(authcProperties.getPathPattern())
+	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
 
-   	    	super.configure(http, authcProperties.getCors());
-   	    	super.configure(http, authcProperties.getCsrf());
-   	    	super.configure(http, authcProperties.getHeaders());
+	    	super.configure(http, authcProperties.getCors());
+	    	super.configure(http, authcProperties.getCsrf());
+	    	super.configure(http, authcProperties.getHeaders());
 	    	super.configure(http);
-   	    	
-   	    }
-   	    
-   	    @Override
+	    	
+		}
+		
+		@Override
 	    public void configure(WebSecurity web) throws Exception {
 	    	super.configure(web);
 	    }
