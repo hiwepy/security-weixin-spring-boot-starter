@@ -5,8 +5,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.boot.biz.userdetails.JwtPayloadRepository;
 import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationSuccessHandler;
 
 @Configuration
 @AutoConfigureBefore(SecurityBizAutoConfiguration.class)
@@ -22,6 +24,11 @@ public class SecurityWxAutoConfiguration{
 	@Bean
 	public WxMatchedAuthenticationFailureHandler wxMatchedAuthenticationFailureHandler() {
 		return new WxMatchedAuthenticationFailureHandler();
+	}
+	
+	@Bean
+	public WxMatchedAuthenticationSuccessHandler wxMatchedAuthenticationSuccessHandler(JwtPayloadRepository payloadRepository) {
+		return new WxMatchedAuthenticationSuccessHandler(payloadRepository);
 	}
 	
 }
