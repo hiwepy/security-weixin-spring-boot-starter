@@ -79,21 +79,20 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
 			loginToken.setSessionKey(sessionResult.getSessionKey());
 			
 			if(StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv()) ) {
-				
 				// 解密手机号码信息
 				WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
 				if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
 					loginToken.setPhoneNumberInfo(phoneNumberInfo);
 			    }
-				
-			 	// 解密用户信息
+			}
+			if(Objects.isNull(loginRequest.getUserInfo()) && StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv())) {
+				// 解密用户信息
 				WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(sessionResult.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
 			    if (null == userInfo) {
 			    	loginToken.setUserInfo(userInfo);
 			    }
-			    
 			}
-
+						
 			UserDetails ud = getUserDetailsService().loadUserDetails(loginToken);
 			
 			// User Status Check
