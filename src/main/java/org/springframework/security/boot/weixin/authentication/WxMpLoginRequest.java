@@ -36,6 +36,14 @@ public class WxMpLoginRequest {
 	 */
 	protected String openid;
 	/**
+	 * 绑定的账号
+	 */
+	protected String username;
+	/**
+	 * 绑定的账号密码
+	 */
+	protected String password;
+	/**
 	 * 微信用户信息
 	 */
 	protected WxMpUser userInfo;
@@ -61,6 +69,22 @@ public class WxMpLoginRequest {
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public WxMpUser getUserInfo() {
