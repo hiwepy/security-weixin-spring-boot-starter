@@ -20,7 +20,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
-import org.springframework.security.boot.weixin.authentication.WxJsCodeAuthenticationProcessingFilter;
 import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProcessingFilter;
 
 import lombok.Getter;
@@ -41,24 +40,10 @@ public class SecurityWxMpAuthcProperties extends SecurityAuthcProperties {
 	private String scope;
 	/** 非必填，用于保持请求和回调的状态，授权请求后原样带回给第三方。该参数可用于防止csrf攻击（跨站请求伪造攻击），建议第三方带上该参数，可设置为简单的随机数加session进行校验 */
 	private String state;
-	/** the jscode parameter name. Defaults to "jscode". */
-	private String jscodeParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_JSCODE_KEY;
-	/** the signature parameter name. Defaults to "signature". */
-	private String signatureParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_SIGNATURE_KEY;
-	/** the rawData parameter name. Defaults to "rawData". */
-	private String rawDataParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_RAWDATA_KEY;
-	/** the encryptedData parameter name. Defaults to "encryptedData". */
-	private String encryptedDataParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY;
-	/** the iv parameter name. Defaults to "iv". */
-	private String ivParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_IV_KEY;
 	/** the unionid parameter name. Defaults to "unionid". */
 	private String unionidParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_UNIONID_KEY;
 	/** the openid parameter name. Defaults to "openid". */
 	private String openidParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_OPENID_KEY;
-	/** the username parameter name. Defaults to "username". */
-	private String usernameParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
-	/** the password parameter name. Defaults to "password". */
-	private String passwordParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
 
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();

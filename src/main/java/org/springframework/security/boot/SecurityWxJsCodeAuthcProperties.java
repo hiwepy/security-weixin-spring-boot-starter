@@ -46,9 +46,9 @@ public class SecurityWxJsCodeAuthcProperties extends SecurityAuthcProperties {
     /** the iv parameter name. Defaults to "iv". */
     private String ivParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_IV_KEY;
     /** the unionid parameter name. Defaults to "unionid". */
-    private String unionidParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_UNIONID_KEY;
+    private String unionidParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_UNIONID_KEY;
     /** the openid parameter name. Defaults to "openid". */
-    private String openidParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_OPENID_KEY;
+    private String openidParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_OPENID_KEY;
     /** the username parameter name. Defaults to "username". */
     private String usernameParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
     /** the password parameter name. Defaults to "password". */
