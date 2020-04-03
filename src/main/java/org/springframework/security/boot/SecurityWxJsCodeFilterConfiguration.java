@@ -52,11 +52,11 @@ public class SecurityWxJsCodeFilterConfiguration {
 	}
 	
     @Configuration
-    @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxAuthcProperties.class, SecurityBizProperties.class })
+    @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxJsCodeAuthcProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 6)
    	static class WxJsCodeWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
-    	private final SecurityWxAuthcProperties authcProperties;
+    	private final SecurityWxJsCodeAuthcProperties authcProperties;
     	
 	    private final AuthenticationEntryPoint authenticationEntryPoint;
   	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
@@ -69,7 +69,7 @@ public class SecurityWxJsCodeFilterConfiguration {
    		public WxJsCodeWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
-   				SecurityWxAuthcProperties authcProperties,
+   				SecurityWxJsCodeAuthcProperties authcProperties,
 
    				ObjectProvider<WxJsCodeAuthenticationProvider> authenticationProvider,
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,

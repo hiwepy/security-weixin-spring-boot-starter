@@ -24,12 +24,17 @@ spring:
        '[/monitoring4]' : perms[1]
     weixin:
       enabled: true
-      authc:
+      ma:
         continue-chain-before-successful-authentication: false
         jscode-parameter: jscode
         path-pattern: /login/weixin
         post-only: true
-
+      mp:
+        continue-chain-before-successful-authentication: false
+        jscode-parameter: jscode
+        path-pattern: /login/weixin
+        post-only: true
+        
 ################################################################################################################
 ###  微信公众号/服务号/小程序配置：
 ################################################################################################################

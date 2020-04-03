@@ -53,6 +53,7 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
     	if (logger.isDebugEnabled()) {
 			logger.debug("Processing authentication request : " + authentication);
 		}
+    	
     	WxMpLoginRequest loginRequest = (WxMpLoginRequest) authentication.getPrincipal();
         
         if (!StringUtils.hasLength(loginRequest.getOpenid())) {
@@ -61,17 +62,18 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
 		}
 
         try {
-        	
-			WxMpUser userInfo = getWxMpService().getUserService().userInfo(loginRequest.getOpenid());
-			if (null == userInfo) {
-				
-			}
 			
 			WxMpAuthenticationToken loginToken = (WxMpAuthenticationToken) authentication;
-			loginToken.setOpenid(userInfo.getOpenId());
-			loginToken.setUnionid(userInfo.getUnionId());
-			loginToken.setUserInfo(userInfo);
-				
+			
+			if(null == loginRequest.getUserInfo()) {
+				WxMpUser userInfo = getWxMpService().getUserService().userInfo(loginRequest.getOpenid());
+				if (null != userInfo) {
+					loginToken.setOpenid(userInfo.getOpenId());
+					loginToken.setUnionid(userInfo.getUnionId());
+					loginToken.setUserInfo(userInfo);
+			    }
+			}
+			
 			UserDetails ud = getUserDetailsService().loadUserDetails(loginToken);
 			
 			// User Status Check

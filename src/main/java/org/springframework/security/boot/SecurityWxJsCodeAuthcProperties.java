@@ -27,13 +27,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@ConfigurationProperties(SecurityWxAuthcProperties.PREFIX)
+@ConfigurationProperties(SecurityWxJsCodeAuthcProperties.PREFIX)
 @Getter
 @Setter
 @ToString
-public class SecurityWxAuthcProperties extends SecurityAuthcProperties {
+public class SecurityWxJsCodeAuthcProperties extends SecurityAuthcProperties {
 
-	public static final String PREFIX = "spring.security.weixin.authc";
+	public static final String PREFIX = "spring.security.weixin.ma";
 	
 	/** the jscode parameter name. Defaults to "jscode". */
     private String jscodeParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_JSCODE_KEY;

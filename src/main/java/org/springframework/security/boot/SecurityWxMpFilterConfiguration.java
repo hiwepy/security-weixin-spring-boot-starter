@@ -52,11 +52,11 @@ public class SecurityWxMpFilterConfiguration {
 	}
 	
     @Configuration
-   	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxAuthcProperties.class, SecurityBizProperties.class })
+   	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxMpAuthcProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 7)
    	static class WxMpWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
-    	private final SecurityWxAuthcProperties authcProperties;
+    	private final SecurityWxMpAuthcProperties authcProperties;
     	
     	private final AuthenticationEntryPoint authenticationEntryPoint;
   	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
@@ -69,7 +69,7 @@ public class SecurityWxMpFilterConfiguration {
    		public WxMpWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
-   				SecurityWxAuthcProperties authcProperties,
+   				SecurityWxMpAuthcProperties authcProperties,
 
    				ObjectProvider<WxMpAuthenticationProvider> authenticationProvider,
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,

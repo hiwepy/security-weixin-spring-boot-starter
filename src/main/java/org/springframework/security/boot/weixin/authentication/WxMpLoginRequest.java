@@ -18,6 +18,8 @@ package org.springframework.security.boot.weixin.authentication;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import me.chanjar.weixin.mp.bean.result.WxMpUser;
+
 /**
  * 微信公众号 Login Request
  * 
@@ -33,11 +35,16 @@ public class WxMpLoginRequest {
 	 * 第三方平台OpenID（通常指第三方账号体系下某应用中用户的唯一ID）
 	 */
 	protected String openid;
+	/**
+	 * 微信用户信息
+	 */
+	protected WxMpUser userInfo;
 	
 	@JsonCreator
-	public WxMpLoginRequest(@JsonProperty("unionid") String unionid, @JsonProperty("openid") String openid) {
+	public WxMpLoginRequest(@JsonProperty("unionid") String unionid, @JsonProperty("openid") String openid, @JsonProperty("userInfo") WxMpUser userInfo) {
 		this.unionid = unionid;
 		this.openid = openid;
+		this.userInfo = userInfo;
 	}
 
 	public String getUnionid() {
@@ -54,6 +61,14 @@ public class WxMpLoginRequest {
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+
+	public WxMpUser getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(WxMpUser userInfo) {
+		this.userInfo = userInfo;
 	}
 
 }

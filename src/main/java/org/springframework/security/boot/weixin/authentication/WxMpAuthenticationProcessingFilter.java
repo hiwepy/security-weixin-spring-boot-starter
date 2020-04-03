@@ -86,7 +86,7 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 		        	openid = "";
 		        }
 		        
-		 		authRequest = this.authenticationToken( new WxMpLoginRequest(unionid, openid) );
+		 		authRequest = this.authenticationToken( new WxMpLoginRequest(unionid, openid, null) );
 		 		
 			}
 

@@ -38,7 +38,7 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 	 */
 	protected String openid;
 	/**
-	 * 用户信息
+	 * 微信用户信息
 	 */
 	protected WxMpUser userInfo;
 	
