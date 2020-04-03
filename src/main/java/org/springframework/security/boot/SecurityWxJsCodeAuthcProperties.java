@@ -21,7 +21,6 @@ import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
 import org.springframework.security.boot.weixin.authentication.WxJsCodeAuthenticationProcessingFilter;
-import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProcessingFilter;
 
 import lombok.Getter;
 import lombok.Setter;
