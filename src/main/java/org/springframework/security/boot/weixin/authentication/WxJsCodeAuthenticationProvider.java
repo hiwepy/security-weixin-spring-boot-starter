@@ -79,18 +79,26 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
      		}
 			
 			if(StringUtils.hasText(loginRequest.getSessionKey()) && StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv()) ) {
-				// 解密手机号码信息
-				WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(loginRequest.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
-				if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
-					loginToken.setPhoneNumberInfo(phoneNumberInfo);
-			    }
+				try {
+					// 解密手机号码信息
+					WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(loginRequest.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
+					if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
+						loginToken.setPhoneNumberInfo(phoneNumberInfo);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			if(Objects.isNull(loginRequest.getUserInfo()) && StringUtils.hasText(loginRequest.getSessionKey()) && StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv())) {
-				// 解密用户信息
-				WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(loginRequest.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
-			    if (null == userInfo) {
-			    	loginToken.setUserInfo(userInfo);
-			    }
+				try {
+					// 解密用户信息
+					WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(loginRequest.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
+					if (null == userInfo) {
+						loginToken.setUserInfo(userInfo);
+					}
+				} catch (Exception e) {
+					throw new AuthenticationServiceException("微信登录认证失败.", e);
+				}
 			}
 						
 			UserDetails ud = getUserDetailsService().loadUserDetails(loginToken);
