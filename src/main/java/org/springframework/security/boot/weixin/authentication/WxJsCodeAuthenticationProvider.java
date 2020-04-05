@@ -66,6 +66,7 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
         	loginToken.setOpenid(loginRequest.getOpenid());
 			loginToken.setUnionid(loginRequest.getUnionid());
 			loginToken.setSessionKey(loginRequest.getSessionKey());
+			loginToken.setUserInfo(loginRequest.getUserInfo());
 			
         	// 表示需要根据jscode获取会话信息
         	if (!StringUtils.hasText(loginRequest.getSessionKey()) && StringUtils.hasText(loginRequest.getJscode()) ) {

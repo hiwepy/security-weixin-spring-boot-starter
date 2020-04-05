@@ -16,6 +16,7 @@
 package org.springframework.security.boot.weixin.authentication;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
@@ -25,6 +26,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
  * 
  * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
  */
+@JsonIgnoreProperties(ignoreUnknown = true) 
 public class WxJsCodeLoginRequest {
 
 	/**
@@ -73,6 +75,7 @@ public class WxJsCodeLoginRequest {
 	protected WxMaUserInfo userInfo;
 
 	@JsonCreator
+	@JsonIgnoreProperties(ignoreUnknown = true) 
 	public WxJsCodeLoginRequest(@JsonProperty("jscode") String jscode,
 			@JsonProperty("sessionKey") String sessionKey,
 			@JsonProperty("unionid") String unionid,

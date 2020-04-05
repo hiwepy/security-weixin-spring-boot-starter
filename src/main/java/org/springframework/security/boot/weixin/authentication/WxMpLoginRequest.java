@@ -16,6 +16,7 @@
 package org.springframework.security.boot.weixin.authentication;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
@@ -25,6 +26,7 @@ import me.chanjar.weixin.mp.bean.result.WxMpUser;
  * 
  * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
  */
+@JsonIgnoreProperties(ignoreUnknown = true) 
 public class WxMpLoginRequest {
 
 	/**
@@ -49,6 +51,7 @@ public class WxMpLoginRequest {
 	protected WxMpUser userInfo;
 	
 	@JsonCreator
+	@JsonIgnoreProperties(ignoreUnknown = true) 
 	public WxMpLoginRequest(@JsonProperty("unionid") String unionid, @JsonProperty("openid") String openid, @JsonProperty("userInfo") WxMpUser userInfo) {
 		this.unionid = unionid;
 		this.openid = openid;
