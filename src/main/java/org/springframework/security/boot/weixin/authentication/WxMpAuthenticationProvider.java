@@ -1,5 +1,7 @@
 package org.springframework.security.boot.weixin.authentication;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -20,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
 public class WxMpAuthenticationProvider implements AuthenticationProvider {
@@ -60,18 +63,29 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
 			logger.debug("No openid found in request.");
 			throw new BadCredentialsException("No openid found in request.");
 		}
-
+        
         try {
 			
 			WxMpAuthenticationToken loginToken = (WxMpAuthenticationToken) authentication;
+			loginToken.setCode(loginRequest.getCode());
+    		loginToken.setOpenid(loginRequest.getOpenid());
+			loginToken.setUnionid(loginRequest.getUnionid());
+			loginToken.setAccessToken(loginRequest.getAccessToken());
+			loginToken.setUserInfo(loginRequest.getUserInfo());
 			
-			if(null == loginRequest.getUserInfo()) {
-				WxMpUser userInfo = getWxMpService().getUserService().userInfo(loginRequest.getOpenid());
-				if (null != userInfo) {
-					loginToken.setOpenid(userInfo.getOpenId());
-					loginToken.setUnionid(userInfo.getUnionId());
+			// 表示需要根据code获取会话信息
+        	if ( Objects.isNull(loginRequest.getAccessToken()) && StringUtils.hasText(loginRequest.getCode()) ) {
+        		WxMpOAuth2AccessToken accessToken = getWxMpService().oauth2getAccessToken(loginRequest.getCode());
+    			if (null != accessToken) {
+    				loginToken.setAccessToken(accessToken);
+    			}
+     		}
+			
+        	if(Objects.isNull(loginRequest.getUserInfo()) && !Objects.isNull(loginRequest.getAccessToken()) ) {
+				WxMpUser userInfo = getWxMpService().oauth2getUserInfo(loginToken.getAccessToken(), loginRequest.getLang());
+				if (null == userInfo) {
 					loginToken.setUserInfo(userInfo);
-			    }
+				}
 			}
 			
 			UserDetails ud = getUserDetailsService().loadUserDetails(loginToken);

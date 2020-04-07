@@ -40,11 +40,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
-	public static final String SPRING_SECURITY_FORM_UNIONID_KEY = "unionid";
+	
+	public static final String SPRING_SECURITY_FORM_CODE_KEY = "code";
+    public static final String SPRING_SECURITY_FORM_UNIONID_KEY = "unionid";
     public static final String SPRING_SECURITY_FORM_OPENID_KEY = "openid";
-
+    public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
+    public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
+    
+    private String codeParameter = SPRING_SECURITY_FORM_CODE_KEY;
     private String unionidParameter = SPRING_SECURITY_FORM_UNIONID_KEY;
     private String openidParameter = SPRING_SECURITY_FORM_OPENID_KEY;
+    private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
+    private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
     private boolean postOnly = true;
 	private final ObjectMapper objectMapper;
 	
@@ -68,6 +75,7 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
         try {
 
 			AbstractAuthenticationToken authRequest = null;
+			
 			// Post && JSON
 			if(WebUtils.isObjectRequest(request)) {
 				
@@ -76,17 +84,29 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 		 		
 			} else {
 				
-		        String unionid = obtainUnionid(request);
+				String code = obtainCode(request);
+				String unionid = obtainUnionid(request);
 		        String openid = obtainOpenid(request);
-		        
+		        String username = obtainUsername(request); 
+		        String password = obtainPassword(request); 
+				
+		        if (code == null) {
+		        	code = "";
+		        }
 		        if (unionid == null) {
 		        	unionid = "";
 		        }
 		        if (openid == null) {
 		        	openid = "";
 		        }
+		        if (username == null) {
+		        	username = "";
+		        }
+		        if (password == null) {
+		        	password = "";
+		        }
 		        
-		 		authRequest = this.authenticationToken( new WxMpLoginRequest(unionid, openid, null) );
+		 		authRequest = this.authenticationToken( new WxMpLoginRequest(code, unionid, openid, username, password, null, null) );
 		 		
 			}
 
@@ -105,14 +125,6 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 
     }
 
-    protected String obtainUnionid(HttpServletRequest request) {
-        return request.getParameter(unionidParameter);
-    }
-    
-    protected String obtainOpenid(HttpServletRequest request) {
-        return request.getParameter(openidParameter);
-    }
-    
     /**
 	 * Provided so that subclasses may configure what is put into the authentication
 	 * request's details property.
@@ -130,8 +142,36 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 		return new WxMpAuthenticationToken( loginRequest, Boolean.TRUE.toString() );
 	}
     
+	protected String obtainCode(HttpServletRequest request) {
+        return request.getParameter(codeParameter);
+    }
+    
+    protected String obtainUnionid(HttpServletRequest request) {
+        return request.getParameter(unionidParameter);
+    }
+    
+    protected String obtainOpenid(HttpServletRequest request) {
+        return request.getParameter(openidParameter);
+    }
+    
+    protected String obtainUsername(HttpServletRequest request) {
+        return request.getParameter(usernameParameter);
+    }
+    
+    protected String obtainPassword(HttpServletRequest request) {
+        return request.getParameter(passwordParameter);
+    }
+
 	public String getUnionidParameter() {
 		return unionidParameter;
+	}
+
+	public String getCodeParameter() {
+		return codeParameter;
+	}
+
+	public void setCodeParameter(String codeParameter) {
+		this.codeParameter = codeParameter;
 	}
 
 	public void setUnionidParameter(String unionidParameter) {
@@ -144,6 +184,22 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 
 	public void setOpenidParameter(String openidParameter) {
 		this.openidParameter = openidParameter;
+	}
+
+	public String getUsernameParameter() {
+		return usernameParameter;
+	}
+
+	public void setUsernameParameter(String usernameParameter) {
+		this.usernameParameter = usernameParameter;
+	}
+
+	public String getPasswordParameter() {
+		return passwordParameter;
+	}
+
+	public void setPasswordParameter(String passwordParameter) {
+		this.passwordParameter = passwordParameter;
 	}
 
 	public boolean isPostOnly() {

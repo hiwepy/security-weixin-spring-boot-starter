@@ -20,6 +20,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
+import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
 public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
@@ -30,6 +31,10 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
     private Object credentials;
 
     /**
+	 * oauth2换取access token的code .
+	 */
+	protected String code;
+	/**
 	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
 	 */
 	protected String unionid;
@@ -37,6 +42,14 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 	 * 第三方平台OpenID（通常指第三方账号体系下某应用中用户的唯一ID）
 	 */
 	protected String openid;
+	/**
+	 * 用户语言：zh_CN, zh_TW, en
+	 */
+	protected String lang = "zh_CN";
+	/**
+	 * 网页授权接口调用凭证
+	 */
+	protected WxMpOAuth2AccessToken accessToken;
 	/**
 	 * 微信用户信息
 	 */
@@ -82,6 +95,14 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
         credentials = null;
     }
 
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public String getUnionid() {
 		return unionid;
 	}
@@ -96,6 +117,22 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public WxMpOAuth2AccessToken getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(WxMpOAuth2AccessToken accessToken) {
+		this.accessToken = accessToken;
 	}
 
 	public WxMpUser getUserInfo() {
