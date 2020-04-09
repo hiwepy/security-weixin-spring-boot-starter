@@ -34,6 +34,8 @@ public class WxMpLoginRequest {
 	 * oauth2换取access token的code .
 	 */
 	protected String code;
+	
+	protected String state;
 	/**
 	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
 	 */
@@ -65,7 +67,8 @@ public class WxMpLoginRequest {
 	
 	@JsonCreator
 	@JsonIgnoreProperties(ignoreUnknown = true) 
-	public WxMpLoginRequest(@JsonProperty("code") String code, 
+	public WxMpLoginRequest(@JsonProperty("code") String code,
+			@JsonProperty("state") String state, 
 			@JsonProperty("unionid") String unionid,
 			@JsonProperty("openid") String openid , 
 			@JsonProperty("username") String username ,
@@ -73,12 +76,29 @@ public class WxMpLoginRequest {
 			@JsonProperty("accessToken") WxMpOAuth2AccessToken accessToken,
 			@JsonProperty("userInfo") WxMpUser userInfo) {
 		this.code = code;
+		this.state = state;
 		this.unionid = unionid;
 		this.openid = openid;
 		this.username = username;
 		this.password = password;
 		this.accessToken = accessToken;
 		this.userInfo = userInfo;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	public String getUnionid() {
@@ -113,14 +133,6 @@ public class WxMpLoginRequest {
 		this.password = password;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-	
 	public String getLang() {
 		return lang;
 	}
@@ -144,6 +156,5 @@ public class WxMpLoginRequest {
 	public void setUserInfo(WxMpUser userInfo) {
 		this.userInfo = userInfo;
 	}
-	
 
 }

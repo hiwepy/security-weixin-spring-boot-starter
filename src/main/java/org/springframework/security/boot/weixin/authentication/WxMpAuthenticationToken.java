@@ -34,6 +34,8 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 	 * oauth2换取access token的code .
 	 */
 	protected String code;
+	
+	protected String state;
 	/**
 	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
 	 */
@@ -42,6 +44,14 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 	 * 第三方平台OpenID（通常指第三方账号体系下某应用中用户的唯一ID）
 	 */
 	protected String openid;
+	/**
+	 * 绑定的账号
+	 */
+	protected String username;
+	/**
+	 * 绑定的账号密码
+	 */
+	protected String password;
 	/**
 	 * 用户语言：zh_CN, zh_TW, en
 	 */
@@ -103,6 +113,14 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 		this.code = code;
 	}
 
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	public String getUnionid() {
 		return unionid;
 	}
@@ -117,6 +135,22 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getLang() {

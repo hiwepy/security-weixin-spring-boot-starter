@@ -42,12 +42,14 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	
 	public static final String SPRING_SECURITY_FORM_CODE_KEY = "code";
+	public static final String SPRING_SECURITY_FORM_STATE_KEY = "state";
     public static final String SPRING_SECURITY_FORM_UNIONID_KEY = "unionid";
     public static final String SPRING_SECURITY_FORM_OPENID_KEY = "openid";
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
     public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
     
     private String codeParameter = SPRING_SECURITY_FORM_CODE_KEY;
+    private String stateParameter = SPRING_SECURITY_FORM_STATE_KEY;
     private String unionidParameter = SPRING_SECURITY_FORM_UNIONID_KEY;
     private String openidParameter = SPRING_SECURITY_FORM_OPENID_KEY;
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
@@ -85,6 +87,7 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 			} else {
 				
 				String code = obtainCode(request);
+				String state = obtainState(request);
 				String unionid = obtainUnionid(request);
 		        String openid = obtainOpenid(request);
 		        String username = obtainUsername(request); 
@@ -92,6 +95,9 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 				
 		        if (code == null) {
 		        	code = "";
+		        }
+		        if (state == null) {
+		        	state = "";
 		        }
 		        if (unionid == null) {
 		        	unionid = "";
@@ -106,7 +112,7 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
 		        	password = "";
 		        }
 		        
-		 		authRequest = this.authenticationToken( new WxMpLoginRequest(code, unionid, openid, username, password, null, null) );
+		 		authRequest = this.authenticationToken( new WxMpLoginRequest(code, state, unionid, openid, username, password, null, null) );
 		 		
 			}
 
@@ -144,6 +150,10 @@ public class WxMpAuthenticationProcessingFilter extends AbstractAuthenticationPr
     
 	protected String obtainCode(HttpServletRequest request) {
         return request.getParameter(codeParameter);
+    }
+	
+	protected String obtainState(HttpServletRequest request) {
+        return request.getParameter(stateParameter);
     }
     
     protected String obtainUnionid(HttpServletRequest request) {
