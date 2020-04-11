@@ -37,7 +37,7 @@ public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticat
 	
 	@Override
 	public boolean supports(Authentication authentication) {
-		return SubjectUtils.isAssignableFrom(authentication.getClass(), WxMpAuthenticationToken.class, WxJsCodeAuthenticationToken.class);
+		return SubjectUtils.isAssignableFrom(authentication.getClass(), WxMpAuthenticationToken.class, WxMaAuthenticationToken.class);
 	}
 
     @Override

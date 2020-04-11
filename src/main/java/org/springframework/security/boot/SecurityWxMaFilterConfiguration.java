@@ -18,8 +18,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
-import org.springframework.security.boot.weixin.authentication.WxJsCodeAuthenticationProcessingFilter;
-import org.springframework.security.boot.weixin.authentication.WxJsCodeAuthenticationProvider;
+import org.springframework.security.boot.weixin.authentication.WxMaAuthenticationProcessingFilter;
+import org.springframework.security.boot.weixin.authentication.WxMaAuthenticationProvider;
 import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationSuccessHandler;
@@ -43,20 +43,20 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 @ConditionalOnClass(WxMaService.class)
 @ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
-public class SecurityWxJsCodeFilterConfiguration {
+public class SecurityWxMaFilterConfiguration {
     
 	@Bean
-	public WxJsCodeAuthenticationProvider wxJsCodeAuthenticationProvider(WxMaService wxMaService,
+	public WxMaAuthenticationProvider wxJsCodeAuthenticationProvider(WxMaService wxMaService,
 			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
-		return new WxJsCodeAuthenticationProvider(wxMaService, userDetailsService, passwordEncoder);
+		return new WxMaAuthenticationProvider(wxMaService, userDetailsService, passwordEncoder);
 	}
 	
     @Configuration
-    @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxJsCodeAuthcProperties.class, SecurityBizProperties.class })
+    @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxMaAuthcProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 6)
-   	static class WxJsCodeWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
+   	static class WxMaWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
-    	private final SecurityWxJsCodeAuthcProperties authcProperties;
+    	private final SecurityWxMaAuthcProperties authcProperties;
     	
 	    private final AuthenticationEntryPoint authenticationEntryPoint;
   	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
@@ -66,12 +66,12 @@ public class SecurityWxJsCodeFilterConfiguration {
       	private final RememberMeServices rememberMeServices;
   		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
    		
-   		public WxJsCodeWebSecurityConfigurerAdapter(
+   		public WxMaWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
-   				SecurityWxJsCodeAuthcProperties authcProperties,
+   				SecurityWxMaAuthcProperties authcProperties,
 
-   				ObjectProvider<WxJsCodeAuthenticationProvider> authenticationProvider,
+   				ObjectProvider<WxMaAuthenticationProvider> authenticationProvider,
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
    				ObjectProvider<WxMatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
@@ -99,9 +99,9 @@ public class SecurityWxJsCodeFilterConfiguration {
    			
    		}
    		   		
-   	    public WxJsCodeAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
+   	    public WxMaAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
    	    	
-   			WxJsCodeAuthenticationProcessingFilter authenticationFilter = new WxJsCodeAuthenticationProcessingFilter(
+   			WxMaAuthenticationProcessingFilter authenticationFilter = new WxMaAuthenticationProcessingFilter(
    					objectMapper);
    			
    			/**

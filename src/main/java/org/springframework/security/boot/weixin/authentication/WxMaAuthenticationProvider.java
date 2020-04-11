@@ -25,7 +25,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import me.chanjar.weixin.common.error.WxErrorException;
 
-public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
+public class WxMaAuthenticationProvider implements AuthenticationProvider {
 	
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -34,7 +34,7 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
     private final WxMaService wxMaService;
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
     
-    public WxJsCodeAuthenticationProvider(final WxMaService wxMaService, final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
+    public WxMaAuthenticationProvider(final WxMaService wxMaService, final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
         this.wxMaService = wxMaService;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
@@ -44,7 +44,7 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
      * 
      * <p>完成匹配Token的认证，这里返回的对象最终会通过：SecurityContextHolder.getContext().setAuthentication(authResult); 放置在上下文中</p>
      * @author 		：<a href="https://github.com/hiwepy">wandl</a>
-     * @param authentication  {@link WxJsCodeAuthenticationToken IdentityCodeAuthenticationToken} 对象
+     * @param authentication  {@link WxMaAuthenticationToken IdentityCodeAuthenticationToken} 对象
      * @return 认证结果{@link Authentication}对象
      * @throws AuthenticationException  认证失败会抛出异常
      */
@@ -57,12 +57,12 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
 			logger.debug("Processing authentication request : " + authentication);
 		}
  
-    	WxJsCodeLoginRequest loginRequest = (WxJsCodeLoginRequest) authentication.getPrincipal();
+    	WxMaLoginRequest loginRequest = (WxMaLoginRequest) authentication.getPrincipal();
         
        
         try {
         	
-        	WxJsCodeAuthenticationToken loginToken = (WxJsCodeAuthenticationToken) authentication;
+        	WxMaAuthenticationToken loginToken = (WxMaAuthenticationToken) authentication;
         	loginToken.setOpenid(loginRequest.getOpenid());
 			loginToken.setUnionid(loginRequest.getUnionid());
 			loginToken.setSessionKey(loginRequest.getSessionKey());
@@ -106,11 +106,11 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
 			// User Status Check
 		    getUserDetailsChecker().check(ud);
 		    
-		    WxJsCodeAuthenticationToken authenticationToken = null;
+		    WxMaAuthenticationToken authenticationToken = null;
 		    if(SecurityPrincipal.class.isAssignableFrom(ud.getClass())) {
-		    	authenticationToken = new WxJsCodeAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
+		    	authenticationToken = new WxMaAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
 		    } else {
-		    	authenticationToken = new WxJsCodeAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
+		    	authenticationToken = new WxMaAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
 			}
 		    authenticationToken.setDetails(authentication.getDetails());
 		    
@@ -124,7 +124,7 @@ public class WxJsCodeAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return (WxJsCodeAuthenticationToken.class.isAssignableFrom(authentication));
+        return (WxMaAuthenticationToken.class.isAssignableFrom(authentication));
     }
 
 	public void setUserDetailsChecker(UserDetailsChecker userDetailsChecker) {

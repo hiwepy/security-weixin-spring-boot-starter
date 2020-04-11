@@ -20,38 +20,38 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
-import org.springframework.security.boot.weixin.authentication.WxJsCodeAuthenticationProcessingFilter;
+import org.springframework.security.boot.weixin.authentication.WxMaAuthenticationProcessingFilter;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@ConfigurationProperties(SecurityWxJsCodeAuthcProperties.PREFIX)
+@ConfigurationProperties(SecurityWxMaAuthcProperties.PREFIX)
 @Getter
 @Setter
 @ToString
-public class SecurityWxJsCodeAuthcProperties extends SecurityAuthcProperties {
+public class SecurityWxMaAuthcProperties extends SecurityAuthcProperties {
 
 	public static final String PREFIX = "spring.security.weixin.ma";
 	
 	/** the jscode parameter name. Defaults to "jscode". */
-    private String jscodeParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_JSCODE_KEY;
+    private String jscodeParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_JSCODE_KEY;
     /** the signature parameter name. Defaults to "signature". */
-    private String signatureParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_SIGNATURE_KEY;
+    private String signatureParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_SIGNATURE_KEY;
     /** the rawData parameter name. Defaults to "rawData". */
-    private String rawDataParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_RAWDATA_KEY;
+    private String rawDataParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_RAWDATA_KEY;
     /** the encryptedData parameter name. Defaults to "encryptedData". */
-    private String encryptedDataParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY;
+    private String encryptedDataParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY;
     /** the iv parameter name. Defaults to "iv". */
-    private String ivParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_IV_KEY;
+    private String ivParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_IV_KEY;
     /** the unionid parameter name. Defaults to "unionid". */
-    private String unionidParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_UNIONID_KEY;
+    private String unionidParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_UNIONID_KEY;
     /** the openid parameter name. Defaults to "openid". */
-    private String openidParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_OPENID_KEY;
+    private String openidParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_OPENID_KEY;
     /** the username parameter name. Defaults to "username". */
-    private String usernameParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
+    private String usernameParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
     /** the password parameter name. Defaults to "password". */
-    private String passwordParameter = WxJsCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
+    private String passwordParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
     
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();

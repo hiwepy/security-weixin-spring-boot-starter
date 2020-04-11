@@ -37,7 +37,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class WxMaAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	public static final String SPRING_SECURITY_FORM_JSCODE_KEY = "jscode";
@@ -66,8 +66,8 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
     private boolean postOnly = true;
 	private final ObjectMapper objectMapper;
 	
-    public WxJsCodeAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-    	super(new AntPathRequestMatcher("/login/weixin/jscode"));
+    public WxMaAuthenticationProcessingFilter(ObjectMapper objectMapper) {
+    	super(new AntPathRequestMatcher("/login/weixin/ma"));
 		this.objectMapper = objectMapper;
     }
 
@@ -89,7 +89,7 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 			// Post && JSON
 			if(WebUtils.isObjectRequest(request)) {
 				
-				WxJsCodeLoginRequest loginRequest = objectMapper.readValue(request.getReader(), WxJsCodeLoginRequest.class);
+				WxMaLoginRequest loginRequest = objectMapper.readValue(request.getReader(), WxMaLoginRequest.class);
 		 		authRequest = this.authenticationToken( loginRequest );
 		 		
 			} else {
@@ -135,7 +135,7 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 		        if (password == null) {
 		        	password = "";
 		        }
-		 		authRequest = this.authenticationToken( new WxJsCodeLoginRequest(jscode, sessionKey, unionid, openid, 
+		 		authRequest = this.authenticationToken( new WxMaLoginRequest(jscode, sessionKey, unionid, openid, 
 		 				signature, rawData, encryptedData, iv, username, password, null));
 		 		
 			}
@@ -168,8 +168,8 @@ public class WxJsCodeAuthenticationProcessingFilter extends AbstractAuthenticati
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 	}
 	
-	protected AbstractAuthenticationToken authenticationToken(WxJsCodeLoginRequest loginRequest) {
-		return new WxJsCodeAuthenticationToken( loginRequest, Boolean.TRUE.toString() );
+	protected AbstractAuthenticationToken authenticationToken(WxMaLoginRequest loginRequest) {
+		return new WxMaAuthenticationToken( loginRequest, Boolean.TRUE.toString() );
 	}
     
 	protected String obtainJscode(HttpServletRequest request) {

@@ -48,7 +48,7 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
      * 
      * <p>完成匹配Token的认证，这里返回的对象最终会通过：SecurityContextHolder.getContext().setAuthentication(authResult); 放置在上下文中</p>
      * @author 		：<a href="https://github.com/hiwepy">wandl</a>
-     * @param authentication  {@link WxJsCodeAuthenticationToken IdentityCodeAuthenticationToken} 对象
+     * @param authentication  {@link WxMaAuthenticationToken IdentityCodeAuthenticationToken} 对象
      * @return 认证结果{@link Authentication}对象
      * @throws AuthenticationException  认证失败会抛出异常
      */
@@ -97,11 +97,11 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
 			// User Status Check
 		    getUserDetailsChecker().check(ud);
 		    
-		    WxJsCodeAuthenticationToken authenticationToken = null;
+		    WxMaAuthenticationToken authenticationToken = null;
 		    if(SecurityPrincipal.class.isAssignableFrom(ud.getClass())) {
-		    	authenticationToken = new WxJsCodeAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
+		    	authenticationToken = new WxMaAuthenticationToken(ud, ud.getPassword(), ud.getAuthorities());        	
 		    } else {
-		    	authenticationToken = new WxJsCodeAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
+		    	authenticationToken = new WxMaAuthenticationToken(ud.getUsername(), ud.getPassword(), ud.getAuthorities());
 			}
 		    authenticationToken.setDetails(authentication.getDetails());
 		    

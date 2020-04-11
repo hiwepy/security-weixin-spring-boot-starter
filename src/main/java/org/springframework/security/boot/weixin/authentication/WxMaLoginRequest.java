@@ -27,7 +27,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
  * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true) 
-public class WxJsCodeLoginRequest {
+public class WxMaLoginRequest {
 
 	/**
 	 * 第三方平台js-sdk获取的编码
@@ -76,7 +76,7 @@ public class WxJsCodeLoginRequest {
 
 	@JsonCreator
 	@JsonIgnoreProperties(ignoreUnknown = true) 
-	public WxJsCodeLoginRequest(@JsonProperty("jscode") String jscode,
+	public WxMaLoginRequest(@JsonProperty("jscode") String jscode,
 			@JsonProperty("sessionKey") String sessionKey,
 			@JsonProperty("unionid") String unionid,
 			@JsonProperty("openid") String openid,
