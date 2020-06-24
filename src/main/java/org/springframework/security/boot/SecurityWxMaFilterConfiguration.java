@@ -54,7 +54,7 @@ public class SecurityWxMaFilterConfiguration {
     @Configuration
     @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxMaAuthcProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 8)
-   	static class WxMaWebSecurityConfigurerAdapter extends AbstractSecurityConfigurerAdapter {
+   	static class WxMaWebSecurityConfigurerAdapter extends WebSecurityBizConfigurerAdapter {
     	
     	private final SecurityWxMaAuthcProperties authcProperties;
     	
