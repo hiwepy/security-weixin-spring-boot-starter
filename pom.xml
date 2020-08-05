@@ -372,10 +372,10 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-		<fastjson.version>1.2.68</fastjson.version>
-		<jwt-issuer.version>1.0.4-SNAPSHOT</jwt-issuer.version>
+		<fastjson.version>1.2.73</fastjson.version>
+		<jwt-issuer.version>1.0.6-SNAPSHOT</jwt-issuer.version>
 		<security-biz-spring-boot-starter.version>1.0.0-SNAPSHOT</security-biz-spring-boot-starter.version>
-		<weixin-java.version>3.7.3.B</weixin-java.version>
+		<weixin-java.version>3.8.7.B</weixin-java.version>
 	</properties>
 	
 	<dependencyManagement>
