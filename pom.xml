@@ -375,7 +375,7 @@
 		<fastjson.version>1.2.73</fastjson.version>
 		<jwt-issuer.version>1.0.6-SNAPSHOT</jwt-issuer.version>
 		<security-biz-spring-boot-starter.version>1.0.0-SNAPSHOT</security-biz-spring-boot-starter.version>
-		<weixin-java.version>3.8.7.B</weixin-java.version>
+		<weixin-java.version>3.8.9.B</weixin-java.version>
 	</properties>
 	
 	<dependencyManagement>
