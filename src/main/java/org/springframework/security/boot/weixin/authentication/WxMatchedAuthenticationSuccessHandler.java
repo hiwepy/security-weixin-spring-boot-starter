@@ -2,7 +2,6 @@ package org.springframework.security.boot.weixin.authentication;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +17,9 @@ import org.springframework.security.boot.biz.authentication.nested.MatchedAuthen
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.biz.userdetails.JwtPayloadRepository;
-import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
+import org.springframework.security.boot.biz.userdetails.UserProfilePayload;
 import org.springframework.security.boot.utils.SubjectUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -33,6 +31,7 @@ public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticat
    
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private JwtPayloadRepository payloadRepository;
+	private boolean checkExpiry = false;
 	
 	public WxMatchedAuthenticationSuccessHandler(JwtPayloadRepository payloadRepository) {
 		this.setPayloadRepository(payloadRepository);
@@ -46,15 +45,6 @@ public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticat
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-        
-    	UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-    	
-    	String tokenString = "";
-		// 账号首次登陆标记
-    	if(SecurityPrincipal.class.isAssignableFrom(userDetails.getClass())) {
-			// JSON Web Token (JWT)
-			tokenString = getPayloadRepository().issueJwt((AbstractAuthenticationToken) authentication);
-		} 
     	
     	// 设置状态码和响应头
 		response.setStatus(HttpStatus.OK.value());
@@ -63,8 +53,8 @@ public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticat
 		// 国际化后的异常信息
 		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey(), LocaleContextHolder.getLocale());
 		// 写出JSON
-		Map<String, Object> tokenMap = SubjectUtils.tokenMap(authentication, tokenString);
-		JSONObject.writeJSONString(response.getWriter(), AuthResponse.success(message, tokenMap));
+		UserProfilePayload profilePayload = getPayloadRepository().getProfilePayload((AbstractAuthenticationToken) authentication, isCheckExpiry());
+		JSONObject.writeJSONString(response.getWriter(), AuthResponse.success(message, profilePayload));
 		
     }
     
@@ -74,6 +64,14 @@ public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticat
 
 	public void setPayloadRepository(JwtPayloadRepository payloadRepository) {
 		this.payloadRepository = payloadRepository;
+	}
+
+	public boolean isCheckExpiry() {
+		return checkExpiry;
+	}
+
+	public void setCheckExpiry(boolean checkExpiry) {
+		this.checkExpiry = checkExpiry;
 	}
 
 }
