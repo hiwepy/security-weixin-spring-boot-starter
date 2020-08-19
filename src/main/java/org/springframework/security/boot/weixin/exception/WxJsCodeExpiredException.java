@@ -1,9 +1,10 @@
 package org.springframework.security.boot.weixin.exception;
 
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.boot.biz.exception.AuthResponseCode;
+import org.springframework.security.boot.biz.exception.AuthenticationExceptionAdapter;
 
 @SuppressWarnings("serial")
-public class WxJsCodeExpiredException extends AuthenticationException {
+public class WxJsCodeExpiredException extends AuthenticationExceptionAdapter {
 
 	// ~ Constructors
 	// ===================================================================================================
@@ -15,7 +16,7 @@ public class WxJsCodeExpiredException extends AuthenticationException {
 	 * @param msg the detail message
 	 */
 	public WxJsCodeExpiredException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHZ_CODE_EXPIRED, msg);
 	}
 
 	/**
@@ -26,7 +27,7 @@ public class WxJsCodeExpiredException extends AuthenticationException {
 	 * @param t   root cause
 	 */
 	public WxJsCodeExpiredException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHZ_CODE_EXPIRED, msg, t);
 	}
 
 }

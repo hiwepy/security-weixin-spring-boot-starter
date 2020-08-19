@@ -15,21 +15,22 @@
  */
 package org.springframework.security.boot.weixin.exception;
 
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.boot.biz.exception.AuthResponseCode;
+import org.springframework.security.boot.biz.exception.AuthenticationExceptionAdapter;
 
 /**
  * TODO
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 
-public class WxAuthenticationException extends AuthenticationException {
+public class WxAuthenticationException extends AuthenticationExceptionAdapter {
 
 	public WxAuthenticationException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHZ_THIRD_PARTY_SERVICE, msg);
 	}
 	
 	public WxAuthenticationException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHZ_THIRD_PARTY_SERVICE, msg, t);
 	}
 	
 }
