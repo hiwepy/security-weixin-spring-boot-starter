@@ -1,4 +1,4 @@
-# security-sms-spring-boot-starter
+# security-weixin-spring-boot-starter
 security starter for spring boot
 
 ### 说明
@@ -12,8 +12,8 @@ security starter for spring boot
 ``` xml
 <dependency>
 	<groupId>${project.groupId}</groupId>
-	<artifactId>security-sms-spring-boot-starter</artifactId>
-	<version>${project.version}</version>
+	<artifactId>security-weixin-spring-boot-starter</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
  
