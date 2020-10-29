@@ -18,11 +18,6 @@ package org.springframework.security.boot.weixin.exception;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.biz.exception.AuthenticationExceptionAdapter;
 
-/**
- * TODO
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
- */
-
 public class WxAuthenticationException extends AuthenticationExceptionAdapter {
 
 	public WxAuthenticationException(String msg) {
