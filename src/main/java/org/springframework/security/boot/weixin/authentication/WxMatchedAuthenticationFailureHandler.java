@@ -47,11 +47,11 @@ public class WxMatchedAuthenticationFailureHandler implements MatchedAuthenticat
 		response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
 		
 		if (e instanceof WxMpBoundNotFoundException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_BOUND_NOT_FOUND.getCode(), 
-					messages.getMessage(AuthResponseCode.SC_AUTHC_BOUND_NOT_FOUND.getMsgKey(), e.getMessage())));
+			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_BOUND_NOT_FOUND.getCode(), 
+					messages.getMessage(AuthResponseCode.SC_BOUND_NOT_FOUND.getMsgKey(), e.getMessage())));
 		} else if (e instanceof WxJsCodeBoundNotFoundException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_BOUND_NOT_FOUND.getCode(), 
-					messages.getMessage(AuthResponseCode.SC_AUTHC_BOUND_NOT_FOUND.getMsgKey(), e.getMessage())));
+			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_BOUND_NOT_FOUND.getCode(), 
+					messages.getMessage(AuthResponseCode.SC_BOUND_NOT_FOUND.getMsgKey(), e.getMessage())));
 		} else if (e instanceof WxJsCodeExpiredException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHZ_CODE_EXPIRED.getCode(), 
 					messages.getMessage(AuthResponseCode.SC_AUTHZ_CODE_EXPIRED.getMsgKey(), e.getMessage())));
