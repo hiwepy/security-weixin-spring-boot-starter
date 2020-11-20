@@ -25,19 +25,17 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
-import org.springframework.security.boot.biz.exception.AuthResponseCode;
-import org.springframework.security.boot.biz.exception.AuthenticationMethodNotSupportedException;
+import org.springframework.security.boot.biz.authentication.PostOnlyAuthenticationProcessingFilter;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class WxMaAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	public static final String SPRING_SECURITY_FORM_JSCODE_KEY = "jscode";
@@ -62,8 +60,6 @@ public class WxMaAuthenticationProcessingFilter extends AbstractAuthenticationPr
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
     private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
     
-    
-    private boolean postOnly = true;
 	private final ObjectMapper objectMapper;
 	
     public WxMaAuthenticationProcessingFilter(ObjectMapper objectMapper) {
@@ -72,16 +68,8 @@ public class WxMaAuthenticationProcessingFilter extends AbstractAuthenticationPr
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+    public Authentication doAttemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-
-        if (isPostOnly() && !WebUtils.isPostRequest(request) ) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Authentication method not supported. Request method: " + request.getMethod());
-			}
-			throw new AuthenticationMethodNotSupportedException(messages.getMessage(AuthResponseCode.SC_AUTHC_METHOD_NOT_ALLOWED.getMsgKey(), new Object[] { request.getMethod() }, 
-					"Authentication method not supported. Request method:" + request.getMethod()));
-		}
         
         try {
 
@@ -267,14 +255,6 @@ public class WxMaAuthenticationProcessingFilter extends AbstractAuthenticationPr
 
 	public void setPasswordParameter(String passwordParameter) {
 		this.passwordParameter = passwordParameter;
-	}
-
-	public boolean isPostOnly() {
-		return postOnly;
-	}
-
-	public void setPostOnly(boolean postOnly) {
-		this.postOnly = postOnly;
 	}
 
 }
