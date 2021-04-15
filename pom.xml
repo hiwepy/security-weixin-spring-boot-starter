@@ -374,7 +374,7 @@
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
 		<fastjson.version>1.2.75</fastjson.version>
 		<jwt-issuer.version>1.0.6.RELEASE</jwt-issuer.version>
-		<spring-security-biz.version>1.0.5.RELEASE</spring-security-biz.version>
+		<spring-security-biz.version>1.0.6.RELEASE</spring-security-biz.version>
 		<weixin-java.version>3.8.8.B</weixin-java.version>
 	</properties>
 	
