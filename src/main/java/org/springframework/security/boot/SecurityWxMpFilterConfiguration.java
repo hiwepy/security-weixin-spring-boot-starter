@@ -17,6 +17,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
+import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationFailureHandler;
@@ -69,6 +70,7 @@ public class SecurityWxMpFilterConfiguration {
    		public WxMpWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
+				SecuritySessionMgtProperties sessionMgtProperties,
    				SecurityWxMpAuthcProperties authcProperties,
 
    				ObjectProvider<WxMpAuthenticationProvider> authenticationProvider,
@@ -83,7 +85,7 @@ public class SecurityWxMpFilterConfiguration {
 
 			) {
    			
-   			super(bizProperties, authcProperties, authenticationProvider.stream().collect(Collectors.toList()),
+   			super(bizProperties, authcProperties, sessionMgtProperties, authenticationProvider.stream().collect(Collectors.toList()),
 					authenticationManagerProvider.getIfAvailable());
    			
    			this.authcProperties = authcProperties;
