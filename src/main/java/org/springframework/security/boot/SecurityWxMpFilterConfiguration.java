@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.biz.web.servlet.i18n.LocaleContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,11 +18,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
-import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationEntryPoint;
-import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationFailureHandler;
-import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationSuccessHandler;
 import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProcessingFilter;
 import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -58,7 +59,8 @@ public class SecurityWxMpFilterConfiguration {
    	static class WxMpWebSecurityConfigurerAdapter extends WebSecurityBizConfigurerAdapter {
     	
     	private final SecurityWxMpAuthcProperties authcProperties;
-    	
+
+    	private final LocaleContextFilter localeContextFilter;
     	private final AuthenticationEntryPoint authenticationEntryPoint;
   	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
   	    private final AuthenticationFailureHandler authenticationFailureHandler;
@@ -73,15 +75,17 @@ public class SecurityWxMpFilterConfiguration {
 				SecuritySessionMgtProperties sessionMgtProperties,
    				SecurityWxMpAuthcProperties authcProperties,
 
+   				ObjectProvider<LocaleContextFilter> localeContextProvider,
    				ObjectProvider<WxMpAuthenticationProvider> authenticationProvider,
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
-   				ObjectProvider<WxMatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
-   				ObjectProvider<WxMatchedAuthenticationSuccessHandler> authenticationSuccessHandlerProvider,
-   				ObjectProvider<WxMatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
+   				ObjectProvider<MatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
+   				ObjectProvider<MatchedAuthenticationSuccessHandler> authenticationSuccessHandlerProvider,
+   				ObjectProvider<MatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
    				ObjectProvider<CaptchaResolver> captchaResolverProvider,
    				ObjectProvider<LogoutHandler> logoutHandlerProvider,
-   				ObjectProvider<ObjectMapper> objectMapperProvider
+   				ObjectProvider<ObjectMapper> objectMapperProvider,
+   				ObjectProvider<RememberMeServices> rememberMeServicesProvider
 
 			) {
    			
@@ -89,14 +93,15 @@ public class SecurityWxMpFilterConfiguration {
 					authenticationManagerProvider.getIfAvailable());
    			
    			this.authcProperties = authcProperties;
-   			
+
+			this.localeContextFilter = localeContextProvider.getIfAvailable();
    			List<AuthenticationListener> authenticationListeners = authenticationListenerProvider.stream().collect(Collectors.toList());
    			this.authenticationEntryPoint = super.authenticationEntryPoint(authenticationEntryPointProvider.stream().collect(Collectors.toList()));
    			this.authenticationSuccessHandler = super.authenticationSuccessHandler(authenticationListeners, authenticationSuccessHandlerProvider.stream().collect(Collectors.toList()));
    			this.authenticationFailureHandler = super.authenticationFailureHandler(authenticationListeners, authenticationFailureHandlerProvider.stream().collect(Collectors.toList()));
    			this.objectMapper = objectMapperProvider.getIfAvailable();
    			this.requestCache = super.requestCache();
-   			this.rememberMeServices = super.rememberMeServices();
+   			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
    			this.sessionAuthenticationStrategy = super.sessionAuthenticationStrategy();
    			
    		}
@@ -111,7 +116,7 @@ public class SecurityWxMpFilterConfiguration {
 			 */
 			PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
 			
-			map.from(authcProperties.getSessionMgt().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
+			map.from(getSessionMgtProperties().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
 			
 			map.from(authenticationManagerBean()).to(authenticationFilter::setAuthenticationManager);
 			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
@@ -131,10 +136,8 @@ public class SecurityWxMpFilterConfiguration {
    	    @Override
 		public void configure(HttpSecurity http) throws Exception {
 			
-		    // Session 管理器配置
 	    	http.requestCache()
 	        	.requestCache(requestCache)
-	        	// 异常处理
 	        	.and()
 	        	.exceptionHandling()
 	        	.authenticationEntryPoint(authenticationEntryPoint)
@@ -143,6 +146,7 @@ public class SecurityWxMpFilterConfiguration {
 	        	.authenticationEntryPoint(authenticationEntryPoint)
 	        	.and()
 	        	.antMatcher(authcProperties.getPathPattern())
+	        	.addFilterBefore(localeContextFilter, UsernamePasswordAuthenticationFilter.class)
 	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
 
 	    	super.configure(http, authcProperties.getCors());
