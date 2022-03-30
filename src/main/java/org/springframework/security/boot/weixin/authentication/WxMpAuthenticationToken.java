@@ -16,17 +16,16 @@
 package org.springframework.security.boot.weixin.authentication;
 import java.util.Collection;
 
+import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
-import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
-import me.chanjar.weixin.mp.bean.result.WxMpUser;
-
 public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
-    
+
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
-    
+
     private final Object principal;
     private Object credentials;
 
@@ -34,7 +33,7 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 	 * oauth2换取access token的code .
 	 */
 	protected String code;
-	
+
 	protected String state;
 	/**
 	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
@@ -59,19 +58,19 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 	/**
 	 * 网页授权接口调用凭证
 	 */
-	protected WxMpOAuth2AccessToken accessToken;
+	protected WxOAuth2AccessToken accessToken;
 	/**
 	 * 微信用户信息
 	 */
-	protected WxMpUser userInfo;
-	
+	protected WxOAuth2UserInfo userInfo;
+
     public WxMpAuthenticationToken(Object principal, String credentials) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
         setAuthenticated(false);
     }
-    
+
     public WxMpAuthenticationToken(Object principal,  Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
@@ -82,15 +81,18 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
     // ~ Methods
     // ========================================================================================================
 
-    public Object getCredentials() {
+    @Override
+	public Object getCredentials() {
         return this.credentials;
     }
 
-    public Object getPrincipal() {
+    @Override
+	public Object getPrincipal() {
         return this.principal;
     }
 
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+    @Override
+	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException(
                     "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
@@ -161,19 +163,19 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 		this.lang = lang;
 	}
 
-	public WxMpOAuth2AccessToken getAccessToken() {
+	public WxOAuth2AccessToken getAccessToken() {
 		return accessToken;
 	}
 
-	public void setAccessToken(WxMpOAuth2AccessToken accessToken) {
+	public void setAccessToken(WxOAuth2AccessToken accessToken) {
 		this.accessToken = accessToken;
 	}
 
-	public WxMpUser getUserInfo() {
+	public WxOAuth2UserInfo getUserInfo() {
 		return userInfo;
 	}
 
-	public void setUserInfo(WxMpUser userInfo) {
+	public void setUserInfo(WxOAuth2UserInfo userInfo) {
 		this.userInfo = userInfo;
 	}
 

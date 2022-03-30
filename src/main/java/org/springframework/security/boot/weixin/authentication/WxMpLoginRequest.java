@@ -19,22 +19,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
-import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 
 /**
  * 微信公众号 Login Request
- * 
+ *
  * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
  */
-@JsonIgnoreProperties(ignoreUnknown = true) 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WxMpLoginRequest {
 
 	/**
 	 * oauth2换取access token的code .
 	 */
 	protected String code;
-	
+
 	protected String state;
 	/**
 	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
@@ -59,22 +59,22 @@ public class WxMpLoginRequest {
 	/**
 	 * 网页授权接口调用凭证
 	 */
-	protected WxMpOAuth2AccessToken accessToken;
+	protected WxOAuth2AccessToken accessToken;
 	/**
 	 * 微信用户信息
 	 */
-	protected WxMpUser userInfo;
-	
+	protected WxOAuth2UserInfo userInfo;
+
 	@JsonCreator
-	@JsonIgnoreProperties(ignoreUnknown = true) 
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public WxMpLoginRequest(@JsonProperty("code") String code,
-			@JsonProperty("state") String state, 
+			@JsonProperty("state") String state,
 			@JsonProperty("unionid") String unionid,
-			@JsonProperty("openid") String openid , 
+			@JsonProperty("openid") String openid ,
 			@JsonProperty("username") String username ,
 			@JsonProperty("password") String password,
-			@JsonProperty("accessToken") WxMpOAuth2AccessToken accessToken,
-			@JsonProperty("userInfo") WxMpUser userInfo) {
+			@JsonProperty("accessToken") WxOAuth2AccessToken accessToken,
+			@JsonProperty("userInfo") WxOAuth2UserInfo userInfo) {
 		this.code = code;
 		this.state = state;
 		this.unionid = unionid;
@@ -141,19 +141,19 @@ public class WxMpLoginRequest {
 		this.lang = lang;
 	}
 
-	public WxMpOAuth2AccessToken getAccessToken() {
+	public WxOAuth2AccessToken getAccessToken() {
 		return accessToken;
 	}
 
-	public void setAccessToken(WxMpOAuth2AccessToken accessToken) {
+	public void setAccessToken(WxOAuth2AccessToken accessToken) {
 		this.accessToken = accessToken;
 	}
 
-	public WxMpUser getUserInfo() {
+	public WxOAuth2UserInfo getUserInfo() {
 		return userInfo;
 	}
 
-	public void setUserInfo(WxMpUser userInfo) {
+	public void setUserInfo(WxOAuth2UserInfo userInfo) {
 		this.userInfo = userInfo;
 	}
 

@@ -48,7 +48,7 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
     public static final String SPRING_SECURITY_FORM_IV_KEY = "iv";
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
     public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
-	
+
     private String jscodeParameter = SPRING_SECURITY_FORM_JSCODE_KEY;
     private String sessionKeyParameter = SPRING_SECURITY_FORM_SESSIONKEY_KEY;
     private String unionidParameter = SPRING_SECURITY_FORM_UNIONID_KEY;
@@ -59,9 +59,9 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
     private String ivParameter = SPRING_SECURITY_FORM_IV_KEY;
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
     private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
-    
+
 	private final ObjectMapper objectMapper;
-	
+
     public WxMaAuthenticationProcessingFilter(ObjectMapper objectMapper) {
     	super(new AntPathRequestMatcher("/login/weixin/ma"));
 		this.objectMapper = objectMapper;
@@ -70,29 +70,29 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
     @Override
     public Authentication doAttemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-        
+
         try {
 
 			AbstractAuthenticationToken authRequest = null;
 			// Post && JSON
 			if(WebUtils.isObjectRequest(request)) {
-				
+
 				WxMaLoginRequest loginRequest = objectMapper.readValue(request.getReader(), WxMaLoginRequest.class);
 		 		authRequest = this.authenticationToken( loginRequest );
-		 		
+
 			} else {
-				
+
 		        String jscode = obtainJscode(request);
 		        String sessionKey = obtainSessionKey(request);
 		        String unionid = obtainUnionid(request);
 		        String openid = obtainOpenid(request);
 		        String signature = obtainSignature(request);
-		        String rawData = obtainRawData(request); 
-		        String encryptedData = obtainEncryptedData(request); 
+		        String rawData = obtainRawData(request);
+		        String encryptedData = obtainEncryptedData(request);
 		        String iv = obtainIv(request);
-		        String username = obtainUsername(request); 
-		        String password = obtainPassword(request); 
-				
+		        String username = obtainUsername(request);
+		        String password = obtainPassword(request);
+
 		        if (jscode == null) {
 		        	jscode = "";
 		        }
@@ -123,9 +123,9 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		        if (password == null) {
 		        	password = "";
 		        }
-		 		authRequest = this.authenticationToken( new WxMaLoginRequest(jscode, sessionKey, unionid, openid, 
+		 		authRequest = this.authenticationToken( new WxMaLoginRequest(jscode, sessionKey, unionid, openid,
 		 				signature, rawData, encryptedData, iv, username, password, null));
-		 		
+
 			}
 
 			// Allow subclasses to set the "details" property
@@ -151,40 +151,41 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 	 * @param authRequest the authentication request object that should have its details
 	 * set
 	 */
+	@Override
 	protected void setDetails(HttpServletRequest request,
-			AbstractAuthenticationToken authRequest) {
+							  AbstractAuthenticationToken authRequest) {
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 	}
-	
+
 	protected AbstractAuthenticationToken authenticationToken(WxMaLoginRequest loginRequest) {
 		return new WxMaAuthenticationToken( loginRequest, Boolean.TRUE.toString() );
 	}
-    
+
 	protected String obtainJscode(HttpServletRequest request) {
         return request.getParameter(jscodeParameter);
     }
-	
+
 	protected String obtainSessionKey(HttpServletRequest request) {
         return request.getParameter(sessionKeyParameter);
     }
-	
+
 	protected String obtainUnionid(HttpServletRequest request) {
         return request.getParameter(unionidParameter);
     }
-	
+
 	protected String obtainOpenid(HttpServletRequest request) {
         return request.getParameter(openidParameter);
     }
-	
-	
+
+
 	protected String obtainSignature(HttpServletRequest request) {
         return request.getParameter(signatureParameter);
     }
-	
+
 	protected String obtainRawData(HttpServletRequest request) {
         return request.getParameter(rawDataParameter);
     }
-	
+
 	protected String obtainEncryptedData(HttpServletRequest request) {
         return request.getParameter(encryptedDataParameter);
     }
@@ -192,11 +193,11 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
     protected String obtainIv(HttpServletRequest request) {
         return request.getParameter(ivParameter);
     }
-    
+
     protected String obtainUsername(HttpServletRequest request) {
         return request.getParameter(usernameParameter);
     }
-    
+
     protected String obtainPassword(HttpServletRequest request) {
         return request.getParameter(passwordParameter);
     }
