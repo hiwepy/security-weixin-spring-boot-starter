@@ -30,27 +30,6 @@ public class WxMaAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
 
-    /**
-	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
-	 */
-	protected String unionid;
-	/**
-	 * 第三方平台OpenID（通常指第三方账号体系下某应用中用户的唯一ID）
-	 */
-	protected String openid;
-	/**
-	 * 第三方平台授权登录会话Key
-	 */
-	protected String sessionKey;
-    /**
-	 * 手机号码信息
-	 */
-	protected WxMaPhoneNumberInfo phoneNumberInfo;
-	/**
-	 * 用户信息
-	 */
-	protected WxMaUserInfo userInfo;
-	
     public WxMaAuthenticationToken(Object principal, String credentials) {
         super(null);
         this.principal = principal;
@@ -68,15 +47,18 @@ public class WxMaAuthenticationToken extends AbstractAuthenticationToken {
     // ~ Methods
     // ========================================================================================================
 
-    public Object getCredentials() {
+    @Override
+	public Object getCredentials() {
         return this.credentials;
     }
 
-    public Object getPrincipal() {
+    @Override
+	public Object getPrincipal() {
         return this.principal;
     }
 
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+    @Override
+	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException(
                     "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
@@ -91,44 +73,5 @@ public class WxMaAuthenticationToken extends AbstractAuthenticationToken {
         credentials = null;
     }
 
-	public String getUnionid() {
-		return unionid;
-	}
-
-	public void setUnionid(String unionid) {
-		this.unionid = unionid;
-	}
-
-	public String getOpenid() {
-		return openid;
-	}
-
-	public void setOpenid(String openid) {
-		this.openid = openid;
-	}
-	
-	public String getSessionKey() {
-		return sessionKey;
-	}
-
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
-	}
- 
-	public WxMaPhoneNumberInfo getPhoneNumberInfo() {
-		return phoneNumberInfo;
-	}
-
-	public void setPhoneNumberInfo(WxMaPhoneNumberInfo phoneNumberInfo) {
-		this.phoneNumberInfo = phoneNumberInfo;
-	}
-
-	public WxMaUserInfo getUserInfo() {
-		return userInfo;
-	}
-
-	public void setUserInfo(WxMaUserInfo userInfo) {
-		this.userInfo = userInfo;
-	}
 
 }

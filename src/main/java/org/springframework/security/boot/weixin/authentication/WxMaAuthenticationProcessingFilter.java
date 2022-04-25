@@ -27,6 +27,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.biz.authentication.PostOnlyAuthenticationProcessingFilter;
 import org.springframework.security.boot.utils.WebUtils;
+import org.springframework.security.boot.weixin.exception.WxJsCodeInvalidException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -34,6 +35,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.util.StringUtils;
 
 public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
@@ -46,8 +48,7 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
     public static final String SPRING_SECURITY_FORM_RAWDATA_KEY = "rawData";
     public static final String SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY = "encryptedData";
     public static final String SPRING_SECURITY_FORM_IV_KEY = "iv";
-    public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
-    public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
+	public static final String SPRING_SECURITY_FORM_TOKEN_KEY = "token";
 
     private String jscodeParameter = SPRING_SECURITY_FORM_JSCODE_KEY;
     private String sessionKeyParameter = SPRING_SECURITY_FORM_SESSIONKEY_KEY;
@@ -57,8 +58,7 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
     private String rawDataParameter = SPRING_SECURITY_FORM_RAWDATA_KEY;
     private String encryptedDataParameter = SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY;
     private String ivParameter = SPRING_SECURITY_FORM_IV_KEY;
-    private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
-    private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
+	private String tokenParameter = SPRING_SECURITY_FORM_TOKEN_KEY;
 
 	private final ObjectMapper objectMapper;
 
@@ -78,11 +78,20 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 			if(WebUtils.isObjectRequest(request)) {
 
 				WxMaLoginRequest loginRequest = objectMapper.readValue(request.getReader(), WxMaLoginRequest.class);
+				if ( !StringUtils.hasText(loginRequest.getJscode())) {
+					logger.debug("No jscode found in request.");
+					throw new WxJsCodeInvalidException("No jscode found in request.");
+				}
 		 		authRequest = this.authenticationToken( loginRequest );
 
 			} else {
 
 		        String jscode = obtainJscode(request);
+				if ( !StringUtils.hasText(jscode)) {
+					logger.debug("No jscode found in request.");
+					throw new WxJsCodeInvalidException("No jscode found in request.");
+				}
+
 		        String sessionKey = obtainSessionKey(request);
 		        String unionid = obtainUnionid(request);
 		        String openid = obtainOpenid(request);
@@ -90,12 +99,8 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		        String rawData = obtainRawData(request);
 		        String encryptedData = obtainEncryptedData(request);
 		        String iv = obtainIv(request);
-		        String username = obtainUsername(request);
-		        String password = obtainPassword(request);
+				String token = obtainToken(request);
 
-		        if (jscode == null) {
-		        	jscode = "";
-		        }
 		        if (sessionKey == null) {
 		        	sessionKey = "";
 		        }
@@ -117,14 +122,12 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		        if (iv == null) {
 		        	iv = "";
 		        }
-		        if (username == null) {
-		        	username = "";
+		        if (token == null) {
+					token = "";
 		        }
-		        if (password == null) {
-		        	password = "";
-		        }
+
 		 		authRequest = this.authenticationToken( new WxMaLoginRequest(jscode, sessionKey, unionid, openid,
-		 				signature, rawData, encryptedData, iv, username, password, null));
+		 				signature, rawData, encryptedData, iv, token));
 
 			}
 
@@ -194,13 +197,9 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
         return request.getParameter(ivParameter);
     }
 
-    protected String obtainUsername(HttpServletRequest request) {
-        return request.getParameter(usernameParameter);
-    }
-
-    protected String obtainPassword(HttpServletRequest request) {
-        return request.getParameter(passwordParameter);
-    }
+	protected String obtainToken(HttpServletRequest request) {
+		return request.getParameter(tokenParameter);
+	}
 
 	public String getJscodeParameter() {
 		return jscodeParameter;
@@ -242,20 +241,12 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		this.ivParameter = ivParameter;
 	}
 
-	public String getUsernameParameter() {
-		return usernameParameter;
+	public void setTokenParameter(String tokenParameter) {
+		this.tokenParameter = tokenParameter;
 	}
 
-	public void setUsernameParameter(String usernameParameter) {
-		this.usernameParameter = usernameParameter;
-	}
-
-	public String getPasswordParameter() {
-		return passwordParameter;
-	}
-
-	public void setPasswordParameter(String passwordParameter) {
-		this.passwordParameter = passwordParameter;
+	public String getTokenParameter() {
+		return tokenParameter;
 	}
 
 }

@@ -48,11 +48,9 @@ public class SecurityWxMaAuthcProperties extends SecurityAuthcProperties {
     private String unionidParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_UNIONID_KEY;
     /** the openid parameter name. Defaults to "openid". */
     private String openidParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_OPENID_KEY;
-    /** the username parameter name. Defaults to "username". */
-    private String usernameParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
-    /** the password parameter name. Defaults to "password". */
-    private String passwordParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
-    
+    /** the token parameter name. Defaults to "token". */
+    private String tokenParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_TOKEN_KEY;
+
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
 
