@@ -13,7 +13,7 @@
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>security-weixin-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Spring Security With Weixin </description>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.2.RELEASE</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -368,7 +368,7 @@
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
 		<fastjson.version>1.2.79</fastjson.version>
 		<jwt-issuer.version>1.1.8.RELEASE</jwt-issuer.version>
-		<spring-security-biz.version>1.0.9.RELEASE</spring-security-biz.version>
+		<spring-security-biz.version>1.1.0.RELEASE</spring-security-biz.version>
 		<weixin-java.version>4.3.1.B</weixin-java.version>
 	</properties>
 
@@ -440,7 +440,7 @@
 			<dependency>
 				<groupId>com.github.binarywang</groupId>
 				<artifactId>qrcode-utils</artifactId>
-				<version>1.1</version>
+				<version>1.2</version>
 			</dependency>
 			<!-- 微信小程序Java SDK : https://mvnrepository.com/artifact/com.github.binarywang/weixin-java-miniapp -->
 			<dependency>
@@ -458,15 +458,8 @@
 			<dependency>
 				<groupId>com.github.binarywang</groupId>
 				<artifactId>java-emoji-converter</artifactId>
-				<version>0.1.1</version>
+				<version>1.0.2</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/io.github.rcarlosdasilva/weixin -->
-			<dependency>
-				<groupId>io.github.rcarlosdasilva</groupId>
-				<artifactId>weixin</artifactId>
-				<version>0.6</version>
-			</dependency>
-
 			<!-- https://mvnrepository.com/artifact/com.github.binarywang/wx-java-open-spring-boot-starter -->
 			<dependency>
 			    <groupId>com.github.binarywang</groupId>
