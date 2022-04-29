@@ -15,6 +15,7 @@
  */
 package org.springframework.security.boot.weixin.authentication;
 
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -62,13 +63,13 @@ public class WxMaLoginRequest {
 	 */
 	protected String iv;
 	/**
-	 * 绑定的账号
+	 * 	当前请求使用的token，用于绑定用户
 	 */
-	protected String username;
+	protected String token;
 	/**
-	 * 绑定的账号密码
+	 * 小程序手机号
 	 */
-	protected String password;
+	WxMaPhoneNumberInfo phoneNumberInfo;
 	/**
 	 * 用户信息
 	 */
@@ -84,9 +85,7 @@ public class WxMaLoginRequest {
 			@JsonProperty("rawData") String rawData, 
 			@JsonProperty("encryptedData") String encryptedData, 
 			@JsonProperty("iv") String iv, 
-			@JsonProperty("username") String username ,
-			@JsonProperty("password") String password , 
-			@JsonProperty("userInfo") WxMaUserInfo userInfo) {
+			@JsonProperty("token") String token ) {
 		
 		this.jscode = jscode;
 		this.sessionKey = sessionKey;
@@ -96,8 +95,7 @@ public class WxMaLoginRequest {
 		this.rawData = rawData;
 		this.encryptedData = encryptedData;
 		this.iv = iv;
-		this.username = username;
-		this.password = password;
+		this.token = token;
 		this.userInfo = userInfo;
 	}
 	
@@ -165,20 +163,20 @@ public class WxMaLoginRequest {
 		this.iv = iv;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getToken() {
+		return token;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setToken(String token) {
+		this.token = token;
 	}
 
-	public String getPassword() {
-		return password;
+	public WxMaPhoneNumberInfo getPhoneNumberInfo() {
+		return phoneNumberInfo;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPhoneNumberInfo(WxMaPhoneNumberInfo phoneNumberInfo) {
+		this.phoneNumberInfo = phoneNumberInfo;
 	}
 
 	public WxMaUserInfo getUserInfo() {

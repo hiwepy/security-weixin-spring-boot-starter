@@ -369,7 +369,7 @@
 		<fastjson.version>1.2.79</fastjson.version>
 		<jwt-issuer.version>1.1.8.RELEASE</jwt-issuer.version>
 		<spring-security-biz.version>1.0.9.RELEASE</spring-security-biz.version>
-		<weixin-java.version>4.2.8.B</weixin-java.version>
+		<weixin-java.version>4.3.1.B</weixin-java.version>
 	</properties>
 
 	<dependencyManagement>
@@ -583,11 +583,13 @@
 		<dependency>
 		    <groupId>com.github.binarywang</groupId>
 		    <artifactId>wx-java-mp-spring-boot-starter</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<!-- For 微信小程序   -->
 		<dependency>
 		    <groupId>com.github.binarywang</groupId>
 		    <artifactId>wx-java-miniapp-spring-boot-starter</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>

@@ -24,7 +24,7 @@ import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 
 /**
  * 微信公众号 Login Request
- *
+ * https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html
  * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -35,6 +35,11 @@ public class WxMpLoginRequest {
 	 */
 	protected String code;
 
+	/**
+	 * 	当前请求使用的token，用于绑定用户
+	 */
+	protected String token;
+
 	protected String state;
 	/**
 	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
@@ -44,14 +49,6 @@ public class WxMpLoginRequest {
 	 * 第三方平台OpenID（通常指第三方账号体系下某应用中用户的唯一ID）
 	 */
 	protected String openid;
-	/**
-	 * 绑定的账号
-	 */
-	protected String username;
-	/**
-	 * 绑定的账号密码
-	 */
-	protected String password;
 	/**
 	 * 用户语言：zh_CN, zh_TW, en
 	 */
@@ -69,20 +66,10 @@ public class WxMpLoginRequest {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public WxMpLoginRequest(@JsonProperty("code") String code,
 			@JsonProperty("state") String state,
-			@JsonProperty("unionid") String unionid,
-			@JsonProperty("openid") String openid ,
-			@JsonProperty("username") String username ,
-			@JsonProperty("password") String password,
-			@JsonProperty("accessToken") WxOAuth2AccessToken accessToken,
-			@JsonProperty("userInfo") WxOAuth2UserInfo userInfo) {
+			@JsonProperty("token") String token) {
 		this.code = code;
 		this.state = state;
-		this.unionid = unionid;
-		this.openid = openid;
-		this.username = username;
-		this.password = password;
-		this.accessToken = accessToken;
-		this.userInfo = userInfo;
+		this.token = token;
 	}
 
 	public String getCode() {
@@ -115,22 +102,6 @@ public class WxMpLoginRequest {
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getLang() {

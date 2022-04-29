@@ -63,18 +63,14 @@ public class WxMaAuthenticationProvider implements AuthenticationProvider {
         try {
         	
         	WxMaAuthenticationToken loginToken = (WxMaAuthenticationToken) authentication;
-        	loginToken.setOpenid(loginRequest.getOpenid());
-			loginToken.setUnionid(loginRequest.getUnionid());
-			loginToken.setSessionKey(loginRequest.getSessionKey());
-			loginToken.setUserInfo(loginRequest.getUserInfo());
-			
+
         	// 表示需要根据jscode获取会话信息
-        	if (!StringUtils.hasText(loginRequest.getSessionKey()) && StringUtils.hasText(loginRequest.getJscode()) ) {
+        	if (StringUtils.hasText(loginRequest.getJscode()) ) {
         		WxMaJscode2SessionResult sessionResult = getWxMaService().jsCode2SessionInfo(loginRequest.getJscode());
     			if (null != sessionResult) {
-    				loginToken.setOpenid(sessionResult.getOpenid());
-    				loginToken.setUnionid(sessionResult.getUnionid());
-    				loginToken.setSessionKey(sessionResult.getSessionKey());
+					loginRequest.setOpenid(sessionResult.getOpenid());
+					loginRequest.setUnionid(sessionResult.getUnionid());
+					loginRequest.setSessionKey(sessionResult.getSessionKey());
     			}
      		}
 			
@@ -82,25 +78,25 @@ public class WxMaAuthenticationProvider implements AuthenticationProvider {
 				try {
 					// 解密手机号码信息
 					WxMaPhoneNumberInfo phoneNumberInfo = getWxMaService().getUserService().getPhoneNoInfo(loginRequest.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv());
-					if ( !Objects.isNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
-						loginToken.setPhoneNumberInfo(phoneNumberInfo);
+					if ( Objects.nonNull(phoneNumberInfo) && StringUtils.hasText(phoneNumberInfo.getPhoneNumber())) {
+						loginRequest.setPhoneNumberInfo(phoneNumberInfo);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage());
 				}
 			}
 			if(Objects.isNull(loginRequest.getUserInfo()) && StringUtils.hasText(loginRequest.getSessionKey()) && StringUtils.hasText(loginRequest.getEncryptedData()) && StringUtils.hasText(loginRequest.getIv())) {
 				try {
 					// 解密用户信息
 					WxMaUserInfo userInfo = getWxMaService().getUserService().getUserInfo(loginRequest.getSessionKey(), loginRequest.getEncryptedData(), loginRequest.getIv() );
-					if (null == userInfo) {
-						loginToken.setUserInfo(userInfo);
+					if (Objects.nonNull(userInfo)) {
+						loginRequest.setUserInfo(userInfo);
 					}
 				} catch (Exception e) {
 					throw new AuthenticationServiceException("微信登录认证失败.", e);
 				}
 			}
-						
+
 			UserDetails ud = getUserDetailsService().loadUserDetails(loginToken);
 			
 			// User Status Check

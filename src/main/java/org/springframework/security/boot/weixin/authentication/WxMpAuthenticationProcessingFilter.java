@@ -41,17 +41,11 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 	
 	public static final String SPRING_SECURITY_FORM_CODE_KEY = "code";
 	public static final String SPRING_SECURITY_FORM_STATE_KEY = "state";
-    public static final String SPRING_SECURITY_FORM_UNIONID_KEY = "unionid";
-    public static final String SPRING_SECURITY_FORM_OPENID_KEY = "openid";
-    public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
-    public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
-    
+	public static final String SPRING_SECURITY_FORM_TOKEN_KEY = "token";
+
     private String codeParameter = SPRING_SECURITY_FORM_CODE_KEY;
     private String stateParameter = SPRING_SECURITY_FORM_STATE_KEY;
-    private String unionidParameter = SPRING_SECURITY_FORM_UNIONID_KEY;
-    private String openidParameter = SPRING_SECURITY_FORM_OPENID_KEY;
-    private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
-    private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
+	private String tokenParameter = SPRING_SECURITY_FORM_TOKEN_KEY;
 	private final ObjectMapper objectMapper;
 	
     public WxMpAuthenticationProcessingFilter(ObjectMapper objectMapper) {
@@ -77,31 +71,19 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 				
 				String code = obtainCode(request);
 				String state = obtainState(request);
-				String unionid = obtainUnionid(request);
-		        String openid = obtainOpenid(request);
-		        String username = obtainUsername(request); 
-		        String password = obtainPassword(request); 
-				
+				String token = obtainToken(request);
+
 		        if (code == null) {
 		        	code = "";
 		        }
 		        if (state == null) {
 		        	state = "";
 		        }
-		        if (unionid == null) {
-		        	unionid = "";
+		        if (token == null) {
+					token = "";
 		        }
-		        if (openid == null) {
-		        	openid = "";
-		        }
-		        if (username == null) {
-		        	username = "";
-		        }
-		        if (password == null) {
-		        	password = "";
-		        }
-		        
-		 		authRequest = this.authenticationToken( new WxMpLoginRequest(code, state, unionid, openid, username, password, null, null) );
+
+		 		authRequest = this.authenticationToken( new WxMpLoginRequest(code, state, token) );
 		 		
 			}
 
@@ -128,8 +110,9 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 	 * @param authRequest the authentication request object that should have its details
 	 * set
 	 */
+	@Override
 	protected void setDetails(HttpServletRequest request,
-			AbstractAuthenticationToken authRequest) {
+							  AbstractAuthenticationToken authRequest) {
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 	}
 	
@@ -144,25 +127,9 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 	protected String obtainState(HttpServletRequest request) {
         return request.getParameter(stateParameter);
     }
-    
-    protected String obtainUnionid(HttpServletRequest request) {
-        return request.getParameter(unionidParameter);
-    }
-    
-    protected String obtainOpenid(HttpServletRequest request) {
-        return request.getParameter(openidParameter);
-    }
-    
-    protected String obtainUsername(HttpServletRequest request) {
-        return request.getParameter(usernameParameter);
-    }
-    
-    protected String obtainPassword(HttpServletRequest request) {
-        return request.getParameter(passwordParameter);
-    }
 
-	public String getUnionidParameter() {
-		return unionidParameter;
+	protected String obtainToken(HttpServletRequest request) {
+		return request.getParameter(tokenParameter);
 	}
 
 	public String getCodeParameter() {
@@ -173,32 +140,12 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		this.codeParameter = codeParameter;
 	}
 
-	public void setUnionidParameter(String unionidParameter) {
-		this.unionidParameter = unionidParameter;
+	public void setTokenParameter(String tokenParameter) {
+		this.tokenParameter = tokenParameter;
 	}
 
-	public String getOpenidParameter() {
-		return openidParameter;
-	}
-
-	public void setOpenidParameter(String openidParameter) {
-		this.openidParameter = openidParameter;
-	}
-
-	public String getUsernameParameter() {
-		return usernameParameter;
-	}
-
-	public void setUsernameParameter(String usernameParameter) {
-		this.usernameParameter = usernameParameter;
-	}
-
-	public String getPasswordParameter() {
-		return passwordParameter;
-	}
-
-	public void setPasswordParameter(String passwordParameter) {
-		this.passwordParameter = passwordParameter;
+	public String getTokenParameter() {
+		return tokenParameter;
 	}
 
 }

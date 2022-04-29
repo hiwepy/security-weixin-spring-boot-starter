@@ -30,9 +30,7 @@ import org.springframework.security.boot.biz.authentication.nested.MatchedAuthen
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.utils.SubjectUtils;
-import org.springframework.security.boot.weixin.exception.WxJsCodeExpiredException;
-import org.springframework.security.boot.weixin.exception.WxJsCodeIncorrectException;
-import org.springframework.security.boot.weixin.exception.WxJsCodeInvalidException;
+import org.springframework.security.boot.weixin.exception.*;
 import org.springframework.security.core.AuthenticationException;
 
 import com.alibaba.fastjson.JSONObject;
@@ -43,8 +41,9 @@ public class WxMatchedAuthenticationEntryPoint implements MatchedAuthenticationE
 	
 	@Override
 	public boolean supports(AuthenticationException e) {
-		return SubjectUtils.isAssignableFrom(e.getClass(), WxJsCodeExpiredException.class, WxJsCodeIncorrectException.class,
-				WxJsCodeInvalidException.class);
+		return SubjectUtils.isAssignableFrom(e.getClass(), WxAuthenticationException.class,
+				WxJsCodeExpiredException.class, WxJsCodeIncorrectException.class,
+				WxJsCodeInvalidException.class, WxJsCodeNotFoundException.class);
 	}
 
 	@Override

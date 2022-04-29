@@ -20,6 +20,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
+import org.springframework.security.boot.weixin.authentication.WxMaAuthenticationProcessingFilter;
 import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProcessingFilter;
 
 import lombok.Getter;
@@ -36,14 +37,9 @@ public class SecurityWxMpAuthcProperties extends SecurityAuthcProperties {
 
 	/** the code parameter name. Defaults to "code". */
     private String codeParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CODE_KEY;
-    /** the unionid parameter name. Defaults to "unionid". */
-    private String unionidParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_UNIONID_KEY;
-    /** the openid parameter name. Defaults to "openid". */
-    private String openidParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_OPENID_KEY;
-    /** the username parameter name. Defaults to "username". */
-    private String usernameParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
-    /** the password parameter name. Defaults to "password". */
-    private String passwordParameter = WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
+
+    /** the token parameter name. Defaults to "token". */
+    private String tokenParameter = WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_TOKEN_KEY;
 
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();

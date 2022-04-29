@@ -116,8 +116,8 @@ public class SecurityWxMpFilterConfiguration {
 			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
 			
 			map.from(authcProperties.getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
-			map.from(authcProperties.getUnionidParameter()).to(authenticationFilter::setUnionidParameter);
-			map.from(authcProperties.getOpenidParameter()).to(authenticationFilter::setOpenidParameter);
+			map.from(authcProperties.getCodeParameter()).to(authenticationFilter::setCodeParameter);
+			map.from(authcProperties.getTokenParameter()).to(authenticationFilter::setTokenParameter);
 			
 			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
 			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);

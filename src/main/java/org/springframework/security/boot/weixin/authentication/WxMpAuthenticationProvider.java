@@ -2,6 +2,7 @@ package org.springframework.security.boot.weixin.authentication;
 
 import java.util.Objects;
 
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
+import org.springframework.security.boot.weixin.exception.WxAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
@@ -29,10 +31,10 @@ import me.chanjar.weixin.mp.api.WxMpService;
  * https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/Official_Accounts/official_account_website_authorization.html
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
+@Slf4j
 public class WxMpAuthenticationProvider implements AuthenticationProvider {
 
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
-	private final Logger logger = LoggerFactory.getLogger(getClass());
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceAdapter userDetailsService;
     private final WxMpService wxMpService;
@@ -57,38 +59,31 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
 
     	Assert.notNull(authentication, "No authentication data provided");
 
-    	if (logger.isDebugEnabled()) {
-			logger.debug("Processing authentication request : " + authentication);
+    	if (log.isDebugEnabled()) {
+			log.debug("Processing authentication request : " + authentication);
 		}
 
     	WxMpLoginRequest loginRequest = (WxMpLoginRequest) authentication.getPrincipal();
 
-        if (!StringUtils.hasLength(loginRequest.getOpenid())) {
-			logger.debug("No openid found in request.");
-			throw new BadCredentialsException("No openid found in request.");
-		}
 
         try {
 
 			WxMpAuthenticationToken loginToken = (WxMpAuthenticationToken) authentication;
-			loginToken.setCode(loginRequest.getCode());
-    		loginToken.setOpenid(loginRequest.getOpenid());
-			loginToken.setUnionid(loginRequest.getUnionid());
-			loginToken.setAccessToken(loginRequest.getAccessToken());
-			loginToken.setUserInfo(loginRequest.getUserInfo());
 
 			// 表示需要根据code获取会话信息
-        	if ( Objects.isNull(loginRequest.getAccessToken()) && StringUtils.hasText(loginRequest.getCode()) ) {
+        	if (StringUtils.hasText(loginRequest.getCode()) ) {
 				WxOAuth2AccessToken accessToken = getWxMpService().getOAuth2Service().getAccessToken(loginRequest.getCode());
-    			if (null != accessToken) {
-    				loginToken.setAccessToken(accessToken);
+				if (Objects.nonNull(accessToken)) {
+					loginRequest.setAccessToken(accessToken);
+					loginRequest.setOpenid(accessToken.getOpenId());
+					loginRequest.setUnionid(accessToken.getUnionId());
     			}
      		}
 
-        	if(Objects.isNull(loginRequest.getUserInfo()) && !Objects.isNull(loginRequest.getAccessToken()) ) {
-				WxOAuth2UserInfo userInfo = getWxMpService().getOAuth2Service().getUserInfo(loginToken.getAccessToken(), loginRequest.getLang());
-				if (null == userInfo) {
-					loginToken.setUserInfo(userInfo);
+        	if(Objects.isNull(loginRequest.getUserInfo()) && Objects.nonNull(loginRequest.getAccessToken()) ) {
+				WxOAuth2UserInfo userInfo = getWxMpService().getOAuth2Service().getUserInfo(loginRequest.getAccessToken(), loginRequest.getLang());
+				if (Objects.nonNull(userInfo)) {
+					loginRequest.setUserInfo(userInfo);
 				}
 			}
 
