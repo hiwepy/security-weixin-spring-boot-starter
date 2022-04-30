@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -37,6 +38,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;
 
+@Slf4j
 public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
@@ -79,7 +81,7 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 
 				WxMaLoginRequest loginRequest = objectMapper.readValue(request.getReader(), WxMaLoginRequest.class);
 				if ( !StringUtils.hasText(loginRequest.getJscode())) {
-					logger.debug("No jscode found in request.");
+					log.debug("No jscode found in request.");
 					throw new WxJsCodeInvalidException("No jscode found in request.");
 				}
 		 		authRequest = this.authenticationToken( loginRequest );
@@ -88,7 +90,7 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 
 		        String jscode = obtainJscode(request);
 				if ( !StringUtils.hasText(jscode)) {
-					logger.debug("No jscode found in request.");
+					log.debug("No jscode found in request.");
 					throw new WxJsCodeInvalidException("No jscode found in request.");
 				}
 
