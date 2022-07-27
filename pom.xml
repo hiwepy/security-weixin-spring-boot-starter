@@ -358,7 +358,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<commons-io.version>2.5</commons-io.version>
+		<commons-io.version>2.11.0</commons-io.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
@@ -366,10 +366,8 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-		<fastjson.version>1.2.79</fastjson.version>
-		<jwt-issuer.version>1.1.8.RELEASE</jwt-issuer.version>
-		<spring-security-biz.version>1.1.2.RELEASE</spring-security-biz.version>
-		<weixin-java.version>4.3.2.B</weixin-java.version>
+		<spring-security-biz.version>1.1.4.RELEASE</spring-security-biz.version>
+		<weixin-java.version>4.3.8.B</weixin-java.version>
 	</properties>
 
 	<dependencyManagement>
@@ -382,29 +380,6 @@
 				<version>${commons-io.version}</version>
 			</dependency>
 
-			<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-			<dependency>
-			    <groupId>com.alibaba</groupId>
-			    <artifactId>fastjson</artifactId>
-			    <version>${fastjson.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.hiwepy</groupId>
-				<artifactId>jwt-issuer-api</artifactId>
-				<version>${jwt-issuer.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.hiwepy</groupId>
-				<artifactId>jwt-issuer-with-jjwt</artifactId>
-				<version>${jwt-issuer.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.github.hiwepy</groupId>
-				<artifactId>jwt-issuer-with-nimbus</artifactId>
-				<version>${jwt-issuer.version}</version>
-				<scope>provided</scope>
-			</dependency>
 			<!-- https://github.com/hiwepy/security-biz-spring-boot-starter -->
 			<dependency>
 				<groupId>com.github.hiwepy</groupId>
@@ -502,12 +477,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<scope>test</scope>
-		</dependency>
 
 		<!-- Core starter, including auto-configuration support, logging and YAML -->
 		<dependency>
@@ -548,25 +517,6 @@
   			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-		<dependency>
-		    <groupId>com.alibaba</groupId>
-		    <artifactId>fastjson</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.hiwepy</groupId>
-			<artifactId>jwt-issuer-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.hiwepy</groupId>
-			<artifactId>jwt-issuer-with-jjwt</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.hiwepy</groupId>
-			<artifactId>jwt-issuer-with-nimbus</artifactId>
-			<scope>provided</scope>
-		</dependency>
 		<!-- https://github.com/hiwepy/security-biz-spring-boot-starter -->
 		<dependency>
 			<groupId>com.github.hiwepy</groupId>

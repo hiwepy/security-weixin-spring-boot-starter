@@ -53,7 +53,7 @@ public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticat
 		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey());
 		// 写出JSON
 		UserProfilePayload profilePayload = getPayloadRepository().getProfilePayload((AbstractAuthenticationToken) authentication, isCheckExpiry());
-		JSONObject.writeJSONString(response.getWriter(), AuthResponse.success(message, profilePayload));
+		JSONObject.writeJSONString(response.getOutputStream(), AuthResponse.success(message, profilePayload));
 		
     }
     
