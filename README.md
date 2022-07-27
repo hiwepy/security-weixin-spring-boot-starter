@@ -14,7 +14,7 @@
 <dependency>
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>security-weixin-spring-boot-starter</artifactId>
-	<version>1.0.2.RELEASE</version>
+	<version>1.0.5.RELEASE</version>
 </dependency>
 ```
 
