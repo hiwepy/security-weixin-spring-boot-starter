@@ -50,18 +50,18 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 @ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 public class SecurityWxMaFilterConfiguration {
-    
+
 	@Bean
 	public WxMaAuthenticationProvider wxJsCodeAuthenticationProvider(WxMaService wxMaService,
 			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
 		return new WxMaAuthenticationProvider(wxMaService, userDetailsService, passwordEncoder);
 	}
-	
+
     @Configuration
     @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxMaAuthcProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 8)
    	static class WxMaWebSecurityConfigurerAdapter extends SecurityFilterChainConfigurer {
-    	
+
     	private final SecurityWxMaAuthcProperties authcProperties;
 
 	    private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -79,28 +79,25 @@ public class SecurityWxMaFilterConfiguration {
 		private final SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
 
    		public WxMaWebSecurityConfigurerAdapter(
-   			
+
    				SecurityBizProperties bizProperties,
    				SecurityWxMaAuthcProperties authcProperties,
 
 				ObjectProvider<AuthenticationProvider> authenticationProvider,
-   				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
-				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
-   				ObjectProvider<MatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
-   				ObjectProvider<MatchedAuthenticationSuccessHandler> authenticationSuccessHandlerProvider,
-   				ObjectProvider<MatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
-
+				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
+				ObjectProvider<MatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
+				ObjectProvider<MatchedAuthenticationSuccessHandler> authenticationSuccessHandlerProvider,
+				ObjectProvider<MatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
 				ObjectProvider<LocaleContextFilter> localeContextProvider,
 				ObjectProvider<LogoutHandler> logoutHandlerProvider,
 				ObjectProvider<LogoutSuccessHandler> logoutSuccessHandlerProvider,
-   				ObjectProvider<ObjectMapper> objectMapperProvider,
-   				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
-   				ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider
+				ObjectProvider<ObjectMapper> objectMapperProvider,
+				ObjectProvider<RememberMeServices> rememberMeServicesProvider
 
 			) {
 
 			super(bizProperties, authcProperties, authenticationProvider.stream().collect(Collectors.toList()));
-   			
+
    			this.authcProperties = authcProperties;
 
    			List<AuthenticationListener> authenticationListeners = authenticationListenerProvider.stream().collect(Collectors.toList());
@@ -113,29 +110,29 @@ public class SecurityWxMaFilterConfiguration {
 			this.logoutSuccessHandler = logoutSuccessHandlerProvider.getIfAvailable();
 			this.objectMapper = objectMapperProvider.getIfAvailable();
 			this.requestCache = super.requestCache();
-			this.rememberMeServices = super.rememberMeServices();
+			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
 			this.sessionRegistry = super.sessionRegistry();
 			this.sessionAuthenticationStrategy = super.sessionAuthenticationStrategy();
 			this.sessionInformationExpiredStrategy = super.sessionInformationExpiredStrategy();
 
    		}
-   		   		
+
    	    public WxMaAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
-   	    	
+
    			WxMaAuthenticationProcessingFilter authenticationFilter = new WxMaAuthenticationProcessingFilter(
    					objectMapper);
-   			
+
    			/**
 			 * 批量设置参数
 			 */
 			PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-			
+
 			map.from(authcProperties.getSessionMgt().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
-			
+
 			map.from(authenticationManagerBean()).to(authenticationFilter::setAuthenticationManager);
 			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
 			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
-			
+
 			map.from(authcProperties.getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
 			map.from(authcProperties.getJscodeParameter()).to(authenticationFilter::setJscodeParameter);
 			map.from(authcProperties.getSignatureParameter()).to(authenticationFilter::setSignatureParameter);
@@ -147,12 +144,12 @@ public class SecurityWxMaFilterConfiguration {
 			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
 			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);
 			map.from(authcProperties.isContinueChainBeforeSuccessfulAuthentication()).to(authenticationFilter::setContinueChainBeforeSuccessfulAuthentication);
-			
+
    	        return authenticationFilter;
    	    }
 
 		@Bean
-		public SecurityFilterChain formSecurityFilterChain(HttpSecurity http) throws Exception {
+		public SecurityFilterChain wxMaSecurityFilterChain(HttpSecurity http) throws Exception {
 			// new DefaultSecurityFilterChain(new AntPathRequestMatcher(authcProperties.getPathPattern()), localeContextFilter, authenticationProcessingFilter());
 			http.antMatcher(authcProperties.getPathPattern())
 					// 请求鉴权配置
@@ -181,30 +178,6 @@ public class SecurityWxMaFilterConfiguration {
 
 			return http.build();
 		}
-
-   	    @Override
-		public void configure(HttpSecurity http) throws Exception {
-			
-	    	http.antMatcher(authcProperties.getPathPattern())
-	        	.exceptionHandling()
-	        	.authenticationEntryPoint(authenticationEntryPoint)
-	        	.and()
-	        	.httpBasic()
-	        	.disable()
-	        	.addFilterBefore(localeContextFilter, UsernamePasswordAuthenticationFilter.class)
-	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
-
-	    	super.configure(http, authcProperties.getCors());
-	    	super.configure(http, authcProperties.getCsrf());
-	    	super.configure(http, authcProperties.getHeaders());
-	    	super.configure(http);
-	    	
-		}
-		
-		@Override
-	    public void configure(WebSecurity web) throws Exception {
-	    	super.configure(web);
-	    }
 
    	}
 
