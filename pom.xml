@@ -366,7 +366,7 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-		<spring-security-biz.version>2.0.2.RELEASE</spring-security-biz.version>
+		<spring-security-biz.version>2.0.4-SNAPSHOT</spring-security-biz.version>
 		<weixin-java.version>4.3.8.B</weixin-java.version>
 	</properties>
 

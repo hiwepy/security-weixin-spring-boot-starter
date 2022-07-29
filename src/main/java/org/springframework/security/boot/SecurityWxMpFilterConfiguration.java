@@ -21,7 +21,6 @@ import org.springframework.security.boot.biz.authentication.AuthenticationListen
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProcessingFilter;
 import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProvider;
