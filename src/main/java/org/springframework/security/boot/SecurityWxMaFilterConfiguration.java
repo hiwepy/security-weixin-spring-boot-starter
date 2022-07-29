@@ -69,7 +69,6 @@ public class SecurityWxMaFilterConfiguration {
    		public WxMaWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
-				SecuritySessionMgtProperties sessionMgtProperties,
    				SecurityWxMaAuthcProperties authcProperties,
 
    				ObjectProvider<LocaleContextFilter> localeContextProvider,
