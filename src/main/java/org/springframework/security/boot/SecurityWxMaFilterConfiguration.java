@@ -52,14 +52,16 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 public class SecurityWxMaFilterConfiguration {
 
 	@Bean
-	public WxMaAuthenticationProvider wxJsCodeAuthenticationProvider(WxMaService wxMaService,
-			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
-		return new WxMaAuthenticationProvider(wxMaService, userDetailsService, passwordEncoder);
+	public WxMaAuthenticationProvider wxJsCodeAuthenticationProvider(
+			ObjectProvider<WxMaService> wxMaServiceProvider,
+			ObjectProvider<UserDetailsServiceAdapter> userDetailsServiceProvider,
+			ObjectProvider<PasswordEncoder> passwordEncoderProvider) {
+		return new WxMaAuthenticationProvider(wxMaServiceProvider.getIfAvailable(), userDetailsServiceProvider.getIfAvailable(), passwordEncoderProvider.getIfAvailable());
 	}
 
     @Configuration
+	@ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
     @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxMaAuthcProperties.class, SecurityBizProperties.class })
-    @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 8)
    	static class WxMaWebSecurityConfigurerAdapter extends SecurityFilterChainConfigurer {
 
     	private final SecurityWxMaAuthcProperties authcProperties;
@@ -149,6 +151,7 @@ public class SecurityWxMaFilterConfiguration {
    	    }
 
 		@Bean
+		@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 8)
 		public SecurityFilterChain wxMaSecurityFilterChain(HttpSecurity http) throws Exception {
 			// new DefaultSecurityFilterChain(new AntPathRequestMatcher(authcProperties.getPathPattern()), localeContextFilter, authenticationProcessingFilter());
 			http.antMatcher(authcProperties.getPathPattern())

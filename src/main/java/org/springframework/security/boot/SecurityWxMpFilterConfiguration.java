@@ -3,6 +3,7 @@ package org.springframework.security.boot;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.biz.web.servlet.i18n.LocaleContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -52,14 +53,16 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 public class SecurityWxMpFilterConfiguration {
 
 	@Bean
-	public WxMpAuthenticationProvider wxMpAuthenticationProvider(WxMpService wxMpService,
-			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
-		return new WxMpAuthenticationProvider(wxMpService, userDetailsService, passwordEncoder);
+	public WxMpAuthenticationProvider wxMpAuthenticationProvider(
+			ObjectProvider<WxMpService> wxMpServiceProvider,
+			ObjectProvider<UserDetailsServiceAdapter> userDetailsServiceProvider,
+			ObjectProvider<PasswordEncoder> passwordEncoderProvider) {
+		return new WxMpAuthenticationProvider(wxMpServiceProvider.getIfAvailable(), userDetailsServiceProvider.getIfAvailable(), passwordEncoderProvider.getIfAvailable());
 	}
 
     @Configuration
+	@ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
    	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxMpAuthcProperties.class, SecurityBizProperties.class })
-    @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 7)
    	static class WxMpWebSecurityConfigurerAdapter extends SecurityFilterChainConfigurer {
 
     	private final SecurityWxMpAuthcProperties authcProperties;
@@ -145,6 +148,7 @@ public class SecurityWxMpFilterConfiguration {
    	    }
 
 		@Bean
+		@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 7)
 		public SecurityFilterChain wxMpSecurityFilterChain(HttpSecurity http) throws Exception {
 			// new DefaultSecurityFilterChain(new AntPathRequestMatcher(authcProperties.getPathPattern()), localeContextFilter, authenticationProcessingFilter());
 			http.antMatcher(authcProperties.getPathPattern())
