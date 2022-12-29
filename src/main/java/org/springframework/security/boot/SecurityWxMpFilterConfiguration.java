@@ -29,6 +29,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -63,10 +64,11 @@ public class SecurityWxMpFilterConfiguration {
    	static class WxMpWebSecurityConfigurerAdapter extends SecurityFilterChainConfigurer {
 
     	private final SecurityWxMpAuthcProperties authcProperties;
-
+		private final SecurityBizProperties bizProperties;
 		private final AuthenticationEntryPoint authenticationEntryPoint;
 		private final AuthenticationSuccessHandler authenticationSuccessHandler;
 		private final AuthenticationFailureHandler authenticationFailureHandler;
+		private final AuthenticationManager authenticationManager;
 		private final InvalidSessionStrategy invalidSessionStrategy;
 		private final LocaleContextFilter localeContextFilter;
 		private final LogoutHandler logoutHandler;
@@ -85,6 +87,7 @@ public class SecurityWxMpFilterConfiguration {
 
 				ObjectProvider<AuthenticationProvider> authenticationProvider,
 				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
+				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
 				ObjectProvider<MatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
 				ObjectProvider<MatchedAuthenticationSuccessHandler> authenticationSuccessHandlerProvider,
 				ObjectProvider<MatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
@@ -92,24 +95,27 @@ public class SecurityWxMpFilterConfiguration {
 				ObjectProvider<LogoutHandler> logoutHandlerProvider,
 				ObjectProvider<LogoutSuccessHandler> logoutSuccessHandlerProvider,
 				ObjectProvider<ObjectMapper> objectMapperProvider,
+				ObjectProvider<RedirectStrategy> redirectStrategyProvider,
+				ObjectProvider<RequestCache> requestCacheProvider,
 				ObjectProvider<RememberMeServices> rememberMeServicesProvider
 
 			) {
 
-			super(bizProperties, authcProperties, authenticationProvider.stream().collect(Collectors.toList()));
+			super(bizProperties, redirectStrategyProvider.getIfAvailable(), requestCacheProvider.getIfAvailable());
 
-   			this.authcProperties = authcProperties;
+			this.authcProperties = authcProperties;
+			this.bizProperties = bizProperties;
 
 			List<AuthenticationListener> authenticationListeners = authenticationListenerProvider.stream().collect(Collectors.toList());
 			this.authenticationEntryPoint = super.authenticationEntryPoint(authenticationEntryPointProvider.stream().collect(Collectors.toList()));
 			this.authenticationSuccessHandler = super.authenticationSuccessHandler(authenticationListeners, authenticationSuccessHandlerProvider.stream().collect(Collectors.toList()));
 			this.authenticationFailureHandler = super.authenticationFailureHandler(authenticationListeners, authenticationFailureHandlerProvider.stream().collect(Collectors.toList()));
 			this.invalidSessionStrategy = super.invalidSessionStrategy();
+			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
 			this.localeContextFilter = localeContextProvider.getIfAvailable();
 			this.logoutHandler = super.logoutHandler(logoutHandlerProvider.stream().collect(Collectors.toList()));
 			this.logoutSuccessHandler = logoutSuccessHandlerProvider.getIfAvailable();
 			this.objectMapper = objectMapperProvider.getIfAvailable();
-			this.requestCache = super.requestCache();
 			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
 			this.sessionRegistry = super.sessionRegistry();
 			this.sessionAuthenticationStrategy = super.sessionAuthenticationStrategy();
@@ -127,9 +133,9 @@ public class SecurityWxMpFilterConfiguration {
 			 */
 			PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
 
-			map.from(authcProperties.getSessionMgt().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
+			map.from(bizProperties.getSession().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
 
-			map.from(authenticationManagerBean()).to(authenticationFilter::setAuthenticationManager);
+			map.from(authenticationManager).to(authenticationFilter::setAuthenticationManager);
 			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
 			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
 
