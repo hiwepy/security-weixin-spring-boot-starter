@@ -60,7 +60,7 @@ public class SecurityWxMpFilterConfiguration {
 
     @Configuration
    	@EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxMpAuthcProperties.class, SecurityBizProperties.class })
-    @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 7)
+
    	static class WxMpWebSecurityConfigurerAdapter extends SecurityFilterChainConfigurer {
 
     	private final SecurityWxMpAuthcProperties authcProperties;
@@ -69,23 +69,18 @@ public class SecurityWxMpFilterConfiguration {
 		private final AuthenticationSuccessHandler authenticationSuccessHandler;
 		private final AuthenticationFailureHandler authenticationFailureHandler;
 		private final AuthenticationManager authenticationManager;
-		private final InvalidSessionStrategy invalidSessionStrategy;
 		private final LocaleContextFilter localeContextFilter;
 		private final LogoutHandler logoutHandler;
 		private final LogoutSuccessHandler logoutSuccessHandler;
 		private final ObjectMapper objectMapper;
-		private final RequestCache requestCache;
 		private final RememberMeServices rememberMeServices;
-		private final SessionRegistry sessionRegistry;
 		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
-		private final SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
 
    		public WxMpWebSecurityConfigurerAdapter(
 
    				SecurityBizProperties bizProperties,
    				SecurityWxMpAuthcProperties authcProperties,
 
-				ObjectProvider<AuthenticationProvider> authenticationProvider,
 				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
 				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
 				ObjectProvider<MatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
@@ -97,7 +92,8 @@ public class SecurityWxMpFilterConfiguration {
 				ObjectProvider<ObjectMapper> objectMapperProvider,
 				ObjectProvider<RedirectStrategy> redirectStrategyProvider,
 				ObjectProvider<RequestCache> requestCacheProvider,
-				ObjectProvider<RememberMeServices> rememberMeServicesProvider
+				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
+				ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider
 
 			) {
 
@@ -107,19 +103,16 @@ public class SecurityWxMpFilterConfiguration {
 			this.bizProperties = bizProperties;
 
 			List<AuthenticationListener> authenticationListeners = authenticationListenerProvider.stream().collect(Collectors.toList());
-			this.authenticationEntryPoint = super.authenticationEntryPoint(authenticationEntryPointProvider.stream().collect(Collectors.toList()));
-			this.authenticationSuccessHandler = super.authenticationSuccessHandler(authenticationListeners, authenticationSuccessHandlerProvider.stream().collect(Collectors.toList()));
+			this.authenticationEntryPoint = super.authenticationEntryPoint(authcProperties.getPathPattern(), authenticationEntryPointProvider.stream().collect(Collectors.toList()));
+			this.authenticationSuccessHandler = super.authenticationSuccessHandler(authcProperties, authenticationListeners, authenticationSuccessHandlerProvider.stream().collect(Collectors.toList()));
 			this.authenticationFailureHandler = super.authenticationFailureHandler(authenticationListeners, authenticationFailureHandlerProvider.stream().collect(Collectors.toList()));
-			this.invalidSessionStrategy = super.invalidSessionStrategy();
 			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
 			this.localeContextFilter = localeContextProvider.getIfAvailable();
 			this.logoutHandler = super.logoutHandler(logoutHandlerProvider.stream().collect(Collectors.toList()));
 			this.logoutSuccessHandler = logoutSuccessHandlerProvider.getIfAvailable();
 			this.objectMapper = objectMapperProvider.getIfAvailable();
 			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
-			this.sessionRegistry = super.sessionRegistry();
-			this.sessionAuthenticationStrategy = super.sessionAuthenticationStrategy();
-			this.sessionInformationExpiredStrategy = super.sessionInformationExpiredStrategy();
+			this.sessionAuthenticationStrategy = sessionAuthenticationStrategyProvider.getIfAvailable();
 
    		}
 
@@ -151,27 +144,20 @@ public class SecurityWxMpFilterConfiguration {
    	    }
 
 		@Bean
+		@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 7)
 		public SecurityFilterChain wxMpSecurityFilterChain(HttpSecurity http) throws Exception {
 			// new DefaultSecurityFilterChain(new AntPathRequestMatcher(authcProperties.getPathPattern()), localeContextFilter, authenticationProcessingFilter());
 			http.antMatcher(authcProperties.getPathPattern())
 					// 请求鉴权配置
 					.authorizeRequests(this.authorizeRequestsCustomizer())
-					// 跨站请求配置
-					.csrf(this.csrfCustomizer(authcProperties.getCsrf()))
-					// 跨域配置
-					.cors(this.corsCustomizer(authcProperties.getCors()))
 					// 异常处理
 					.exceptionHandling((configurer) -> configurer.authenticationEntryPoint(authenticationEntryPoint))
 					// 请求头配置
-					.headers(this.headersCustomizer(authcProperties.getHeaders()))
+					.headers(this.headersCustomizer(bizProperties.getHeaders()))
 					// Request 缓存配置
-					.requestCache((request) -> request.requestCache(requestCache))
-					// Session 管理器配置参数
-					.sessionManagement(this.sessionManagementCustomizer(authcProperties.getSessionMgt(), authcProperties.getLogout(),
-							invalidSessionStrategy, sessionRegistry, sessionInformationExpiredStrategy,
-							authenticationFailureHandler, sessionAuthenticationStrategy))
+					.requestCache(this.requestCacheCustomizer())
 					// Session 注销配置
-					.logout(this.logoutCustomizer(authcProperties.getLogout(), logoutHandler, logoutSuccessHandler))
+					.logout(this.logoutCustomizer(bizProperties.getLogout(), logoutHandler, logoutSuccessHandler))
 					// 禁用 Http Basic
 					.httpBasic((basic) -> basic.disable())
 					// Filter 配置
