@@ -13,7 +13,7 @@
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>security-weixin-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Spring Security With Weixin </description>
-	<version>1.0.5.RELEASE</version>
+	<version>1.0.6-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -367,7 +367,7 @@
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
 		<spring-security-biz.version>1.1.4.RELEASE</spring-security-biz.version>
-		<weixin-java.version>4.3.8.B</weixin-java.version>
+		<weixin-java.version>4.5.5.B</weixin-java.version>
 	</properties>
 
 	<dependencyManagement>
