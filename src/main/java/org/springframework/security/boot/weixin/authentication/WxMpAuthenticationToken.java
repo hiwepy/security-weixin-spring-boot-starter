@@ -29,7 +29,7 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
     private Object credentials;
 
     public WxMpAuthenticationToken(Object principal, String credentials) {
-        super(null);
+        super((Collection<? extends GrantedAuthority>) null);
         this.principal = principal;
         this.credentials = credentials;
         setAuthenticated(false);

@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
@@ -30,7 +31,7 @@ import org.springframework.security.boot.biz.authentication.PostOnlyAuthenticati
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import java.io.IOException;
 
@@ -51,7 +52,7 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 	private final ObjectMapper objectMapper;
 	
     public WxMpAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-    	super(new AntPathRequestMatcher("/login/weixin/mp"));
+		super(PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/login/weixin/mp"));
 		this.objectMapper = objectMapper;
     }
 
