@@ -16,18 +16,18 @@
 package org.springframework.security.boot.weixin.authentication;
 
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
+import lombok.Data;
 
 /**
  * 微信小程序 Login Request
- * 
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
-@JsonIgnoreProperties(ignoreUnknown = true) 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class WxMaLoginRequest {
 
 	/**
@@ -96,95 +96,6 @@ public class WxMaLoginRequest {
 		this.encryptedData = encryptedData;
 		this.iv = iv;
 		this.token = token;
-		this.userInfo = userInfo;
-	}
-	
-	public String getJscode() {
-		return jscode;
-	}
-
-	public void setJscode(String jscode) {
-		this.jscode = jscode;
-	}
-	
-	public String getSessionKey() {
-		return sessionKey;
-	}
-
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
-	}
-
-	public String getUnionid() {
-		return unionid;
-	}
-
-	public void setUnionid(String unionid) {
-		this.unionid = unionid;
-	}
-
-	public String getOpenid() {
-		return openid;
-	}
-
-	public void setOpenid(String openid) {
-		this.openid = openid;
-	}
-
-	public String getSignature() {
-		return signature;
-	}
-
-	public void setSignature(String signature) {
-		this.signature = signature;
-	}
-
-	public String getRawData() {
-		return rawData;
-	}
-
-	public void setRawData(String rawData) {
-		this.rawData = rawData;
-	}
-
-	public String getEncryptedData() {
-		return encryptedData;
-	}
-
-	public void setEncryptedData(String encryptedData) {
-		this.encryptedData = encryptedData;
-	}
-
-	public String getIv() {
-		return iv;
-	}
-
-	public void setIv(String iv) {
-		this.iv = iv;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public WxMaPhoneNumberInfo getPhoneNumberInfo() {
-		return phoneNumberInfo;
-	}
-
-	public void setPhoneNumberInfo(WxMaPhoneNumberInfo phoneNumberInfo) {
-		this.phoneNumberInfo = phoneNumberInfo;
-	}
-
-	public WxMaUserInfo getUserInfo() {
-		return userInfo;
-	}
-
-	public void setUserInfo(WxMaUserInfo userInfo) {
-		this.userInfo = userInfo;
 	}
 
 }
