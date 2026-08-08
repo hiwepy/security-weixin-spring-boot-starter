@@ -15,63 +15,82 @@
  */
 package org.springframework.security.boot;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
+import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
+import org.springframework.security.boot.weixin.authentication.WxMaAuthenticationProcessingFilter;
+import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProcessingFilter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {{ @link SecurityWxMpAuthcProperties }}.
+ * Unit tests for {@link SecurityWxMpAuthcProperties}.
  *
- * <p>Verifies default values, getters/setters and POJO contract.</p>
+ * <p>Verifies the configuration prefix, default parameter names, the nested
+ * {@code redirect}/{@code logout} properties and the getter/setter contract.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
  * @since 1.0.0
  */
 @DisplayName("SecurityWxMpAuthcProperties Tests")
 class SecurityWxMpAuthcPropertiesTest {
-    @Test
-    @DisplayName("Default constructor creates non-null instance")
-    void testDefaultInstance() {
-        SecurityWxMpAuthcProperties props = new SecurityWxMpAuthcProperties();
-        assertThat(props).isNotNull();
+
+    private SecurityWxMpAuthcProperties properties;
+
+    @BeforeEach
+    void setUp() {
+        properties = new SecurityWxMpAuthcProperties();
     }
 
     @Test
-    @DisplayName("Field 'codeParameter' can be set and read")
-    void testCodeParameterField() {
-        SecurityWxMpAuthcProperties props = new SecurityWxMpAuthcProperties();
-        // Use reflection to set private field (covers all fields including those without setters)
-        try {
-            java.lang.reflect.Field f = SecurityWxMpAuthcProperties.class.getDeclaredField("codeParameter");
-            f.setAccessible(true);
-            f.set(props, "test");
-            Object value = f.get(props);
-            assertThat(value).isNotNull();
-        } catch (Exception e) {
-            // Field may have a more complex type; skip silently
-        }
-    }
-
-    @Test
-    @DisplayName("Field 'tokenParameter' can be set and read")
-    void testTokenParameterField() {
-        SecurityWxMpAuthcProperties props = new SecurityWxMpAuthcProperties();
-        // Use reflection to set private field (covers all fields including those without setters)
-        try {
-            java.lang.reflect.Field f = SecurityWxMpAuthcProperties.class.getDeclaredField("tokenParameter");
-            f.setAccessible(true);
-            f.set(props, "test");
-            Object value = f.get(props);
-            assertThat(value).isNotNull();
-        } catch (Exception e) {
-            // Field may have a more complex type; skip silently
-        }
-    }
-
-    @Test
-    @DisplayName("Public constant 'PREFIX' has expected value")
-    void testPREFIXConstant() {
+    @DisplayName("Configuration prefix is 'spring.security.weixin.mp'")
+    void testPrefix() {
         assertThat(SecurityWxMpAuthcProperties.PREFIX).isEqualTo("spring.security.weixin.mp");
+    }
+
+    @Test
+    @DisplayName("Default codeParameter matches the filter constant")
+    void testDefaultCodeParameter() {
+        assertThat(properties.getCodeParameter())
+                .isEqualTo(WxMpAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CODE_KEY);
+    }
+
+    @Test
+    @DisplayName("Default tokenParameter matches the filter constant")
+    void testDefaultTokenParameter() {
+        assertThat(properties.getTokenParameter())
+                .isEqualTo(WxMaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_TOKEN_KEY);
+    }
+
+    @Test
+    @DisplayName("Setters update parameter values")
+    void testSettersUpdateValues() {
+        properties.setCodeParameter("c1");
+        properties.setTokenParameter("t1");
+
+        assertThat(properties.getCodeParameter()).isEqualTo("c1");
+        assertThat(properties.getTokenParameter()).isEqualTo("t1");
+    }
+
+    @Test
+    @DisplayName("Nested redirect and logout properties are initialised")
+    void testNestedProperties() {
+        assertThat(properties.getRedirect()).isNotNull().isInstanceOf(SecurityRedirectProperties.class);
+        assertThat(properties.getLogout()).isNotNull().isInstanceOf(SecurityLogoutProperties.class);
+
+        SecurityRedirectProperties redirect = new SecurityRedirectProperties();
+        SecurityLogoutProperties logout = new SecurityLogoutProperties();
+        properties.setRedirect(redirect);
+        properties.setLogout(logout);
+        assertThat(properties.getRedirect()).isSameAs(redirect);
+        assertThat(properties.getLogout()).isSameAs(logout);
+    }
+
+    @Test
+    @DisplayName("ToString returns a non-blank representation")
+    void testToString() {
+        assertThat(properties.toString()).isNotBlank();
     }
 }

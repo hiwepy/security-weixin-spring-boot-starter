@@ -28,17 +28,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 /**
- * Unit tests for {@link WxMaAuthenticationToken}.
- *
- * <p>Verifies both constructors, principal/credentials accessors, the
- * authenticated flag lifecycle, {@code eraseCredentials} behaviour and the
- * guard rail that prevents promoting an unauthenticated token.</p>
+ * Unit tests for {@link WxMpAuthenticationToken}.
  *
  * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
  * @since 1.0.0
  */
-@DisplayName("WxMaAuthenticationToken Tests")
-class WxMaAuthenticationTokenTest {
+@DisplayName("WxMpAuthenticationToken Tests")
+class WxMpAuthenticationTokenTest {
 
     private static final Collection<? extends GrantedAuthority> AUTHORITIES =
             Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
@@ -46,8 +42,8 @@ class WxMaAuthenticationTokenTest {
     @Test
     @DisplayName("Unauthenticated token exposes principal and credentials")
     void testUnauthenticatedToken() {
-        WxMaLoginRequest principal = new WxMaLoginRequest("js", "sk", "u", "o", "s", "r", "e", "i", "t");
-        WxMaAuthenticationToken token = new WxMaAuthenticationToken(principal, "true");
+        WxMpLoginRequest principal = new WxMpLoginRequest("code", "state", "token");
+        WxMpAuthenticationToken token = new WxMpAuthenticationToken(principal, "true");
 
         assertThat(token.getPrincipal()).isSameAs(principal);
         assertThat(token.getCredentials()).isEqualTo("true");
@@ -59,7 +55,7 @@ class WxMaAuthenticationTokenTest {
     @DisplayName("Authenticated token carries authorities and is authenticated")
     void testAuthenticatedToken() {
         User principal = new User("admin", "password", AUTHORITIES);
-        WxMaAuthenticationToken token = new WxMaAuthenticationToken(principal, "password", AUTHORITIES);
+        WxMpAuthenticationToken token = new WxMpAuthenticationToken(principal, "password", AUTHORITIES);
 
         assertThat(token.getPrincipal()).isSameAs(principal);
         assertThat(token.getCredentials()).isEqualTo("password");
@@ -71,7 +67,7 @@ class WxMaAuthenticationTokenTest {
     @Test
     @DisplayName("setAuthenticated(true) is rejected")
     void testSetAuthenticatedTrueRejected() {
-        WxMaAuthenticationToken token = new WxMaAuthenticationToken("p", "c");
+        WxMpAuthenticationToken token = new WxMpAuthenticationToken("p", "c");
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> token.setAuthenticated(true));
     }
@@ -79,7 +75,7 @@ class WxMaAuthenticationTokenTest {
     @Test
     @DisplayName("setAuthenticated(false) keeps the token unauthenticated")
     void testSetAuthenticatedFalse() {
-        WxMaAuthenticationToken token = new WxMaAuthenticationToken("p", "c", AUTHORITIES);
+        WxMpAuthenticationToken token = new WxMpAuthenticationToken("p", "c", AUTHORITIES);
         token.setAuthenticated(false);
         assertThat(token.isAuthenticated()).isFalse();
     }
@@ -87,7 +83,7 @@ class WxMaAuthenticationTokenTest {
     @Test
     @DisplayName("eraseCredentials clears the credentials")
     void testEraseCredentials() {
-        WxMaAuthenticationToken token = new WxMaAuthenticationToken("p", "secret", AUTHORITIES);
+        WxMpAuthenticationToken token = new WxMpAuthenticationToken("p", "secret", AUTHORITIES);
         token.eraseCredentials();
         assertThat(token.getCredentials()).isNull();
     }
@@ -95,7 +91,7 @@ class WxMaAuthenticationTokenTest {
     @Test
     @DisplayName("Null principal and credentials are tolerated")
     void testNullPrincipalAndCredentials() {
-        WxMaAuthenticationToken token = new WxMaAuthenticationToken(null, null);
+        WxMpAuthenticationToken token = new WxMpAuthenticationToken(null, null);
         assertThat(token.getPrincipal()).isNull();
         assertThat(token.getCredentials()).isNull();
     }

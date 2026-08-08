@@ -18,16 +18,19 @@ package org.springframework.security.boot;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationEntryPoint;
+import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenticationSuccessHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {{ @link SecurityWxAutoConfiguration }}.
+ * Unit tests for {@link SecurityWxAutoConfiguration}.
  *
  * <p>Verifies the auto-configuration activates under the expected conditions
  * and exposes its declared beans.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
  * @since 1.0.0
  */
 @DisplayName("SecurityWxAutoConfiguration Tests")
@@ -47,7 +50,12 @@ class SecurityWxAutoConfigurationTest {
     void testLoadsWhenEnabledPropertySet() {
         runner.withUserConfiguration(SecurityWxAutoConfiguration.class)
                 .withPropertyValues("spring.security.weixin.enabled=true")
-                .run(context -> assertThat(context).hasSingleBean(SecurityWxAutoConfiguration.class));
+                .run(context -> {
+                    assertThat(context).hasSingleBean(SecurityWxAutoConfiguration.class);
+                    assertThat(context).hasSingleBean(WxMatchedAuthenticationEntryPoint.class);
+                    assertThat(context).hasSingleBean(WxMatchedAuthenticationFailureHandler.class);
+                    assertThat(context).hasSingleBean(WxMatchedAuthenticationSuccessHandler.class);
+                });
     }
 
     @Test

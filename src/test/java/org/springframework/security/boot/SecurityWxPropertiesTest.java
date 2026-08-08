@@ -15,47 +15,53 @@
  */
 package org.springframework.security.boot;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {{ @link SecurityWxProperties }}.
+ * Unit tests for {@link SecurityWxProperties}.
  *
- * <p>Verifies default values, getters/setters and POJO contract.</p>
+ * <p>Verifies the configuration prefix, default values and the
+ * getter/setter contract for the {@code enabled} flag.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
  * @since 1.0.0
  */
 @DisplayName("SecurityWxProperties Tests")
 class SecurityWxPropertiesTest {
-    @Test
-    @DisplayName("Default constructor creates non-null instance")
-    void testDefaultInstance() {
-        SecurityWxProperties props = new SecurityWxProperties();
-        assertThat(props).isNotNull();
+
+    private SecurityWxProperties properties;
+
+    @BeforeEach
+    void setUp() {
+        properties = new SecurityWxProperties();
     }
 
     @Test
-    @DisplayName("Field 'enabled' can be set and read")
-    void testEnabledField() {
-        SecurityWxProperties props = new SecurityWxProperties();
-        // Use reflection to set private field (covers all fields including those without setters)
-        try {
-            java.lang.reflect.Field f = SecurityWxProperties.class.getDeclaredField("enabled");
-            f.setAccessible(true);
-            f.set(props, true);
-            Object value = f.get(props);
-            assertThat(value).isNotNull();
-        } catch (Exception e) {
-            // Field may have a more complex type; skip silently
-        }
-    }
-
-    @Test
-    @DisplayName("Public constant 'PREFIX' has expected value")
-    void testPREFIXConstant() {
+    @DisplayName("Configuration prefix is 'spring.security.weixin'")
+    void testPrefix() {
         assertThat(SecurityWxProperties.PREFIX).isEqualTo("spring.security.weixin");
+    }
+
+    @Test
+    @DisplayName("Default value of enabled is false")
+    void testDefaultEnabled() {
+        assertThat(properties.isEnabled()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Setter for enabled updates the value")
+    void testSetEnabled() {
+        properties.setEnabled(true);
+        assertThat(properties.isEnabled()).isTrue();
+    }
+
+    @Test
+    @DisplayName("ToString returns a non-blank representation")
+    void testToString() {
+        assertThat(properties.toString()).contains("enabled");
     }
 }
