@@ -1,20 +1,16 @@
 package org.springframework.security.boot.weixin.authentication;
 
-import java.util.Objects;
-
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
-import org.springframework.security.boot.weixin.exception.WxAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
@@ -24,12 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.mp.api.WxMpService;
+import java.util.Objects;
 
 /**
  * https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/Official_Accounts/official_account_website_authorization.html
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Slf4j
 public class WxMpAuthenticationProvider implements AuthenticationProvider {
@@ -49,7 +44,7 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
     /**
      *
      * <p>完成匹配Token的认证，这里返回的对象最终会通过：SecurityContextHolder.getContext().setAuthentication(authResult); 放置在上下文中</p>
-     * @author 		：<a href="https://github.com/hiwepy">wandl</a>
+     * @author [@Loong Wan](https://github.com/loong10k)
      * @param authentication  {@link WxMaAuthenticationToken IdentityCodeAuthenticationToken} 对象
      * @return 认证结果{@link Authentication}对象
      * @throws AuthenticationException  认证失败会抛出异常

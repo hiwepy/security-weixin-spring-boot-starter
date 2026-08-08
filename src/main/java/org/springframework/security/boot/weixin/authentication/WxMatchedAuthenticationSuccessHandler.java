@@ -1,6 +1,11 @@
 package org.springframework.security.boot.weixin.authentication;
 
 import com.alibaba.fastjson2.JSON;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,21 +19,22 @@ import org.springframework.security.boot.biz.userdetails.UserProfilePayload;
 import org.springframework.security.boot.utils.SubjectUtils;
 import org.springframework.security.core.Authentication;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
  * 微信公共号、小程序认证 (authentication)成功回调器：讲认证信息写回前端
- * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticationSuccessHandler {
    
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
-	private JwtPayloadRepository payloadRepository;
-	private boolean checkExpiry = false;
+	@Setter
+    @Getter
+    private JwtPayloadRepository payloadRepository;
+	@Setter
+    @Getter
+    private boolean checkExpiry = false;
 	
 	public WxMatchedAuthenticationSuccessHandler(JwtPayloadRepository payloadRepository) {
 		this.setPayloadRepository(payloadRepository);
@@ -54,21 +60,5 @@ public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticat
 		JSON.writeTo(response.getOutputStream(), AuthResponse.success(message, profilePayload));
 		
     }
-    
-	public JwtPayloadRepository getPayloadRepository() {
-		return payloadRepository;
-	}
-
-	public void setPayloadRepository(JwtPayloadRepository payloadRepository) {
-		this.payloadRepository = payloadRepository;
-	}
-
-	public boolean isCheckExpiry() {
-		return checkExpiry;
-	}
-
-	public void setCheckExpiry(boolean checkExpiry) {
-		this.checkExpiry = checkExpiry;
-	}
 
 }

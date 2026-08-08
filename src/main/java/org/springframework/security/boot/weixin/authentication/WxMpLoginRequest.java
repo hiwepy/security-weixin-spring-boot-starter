@@ -18,16 +18,17 @@ package org.springframework.security.boot.weixin.authentication;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.Data;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 
 /**
  * 微信公众号 Login Request
- * https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * <a href="https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html">在线文档</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class WxMpLoginRequest {
 
 	/**
@@ -70,62 +71,6 @@ public class WxMpLoginRequest {
 		this.code = code;
 		this.state = state;
 		this.token = token;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getUnionid() {
-		return unionid;
-	}
-
-	public void setUnionid(String unionid) {
-		this.unionid = unionid;
-	}
-
-	public String getOpenid() {
-		return openid;
-	}
-
-	public void setOpenid(String openid) {
-		this.openid = openid;
-	}
-
-	public String getLang() {
-		return lang;
-	}
-
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
-
-	public WxOAuth2AccessToken getAccessToken() {
-		return accessToken;
-	}
-
-	public void setAccessToken(WxOAuth2AccessToken accessToken) {
-		this.accessToken = accessToken;
-	}
-
-	public WxOAuth2UserInfo getUserInfo() {
-		return userInfo;
-	}
-
-	public void setUserInfo(WxOAuth2UserInfo userInfo) {
-		this.userInfo = userInfo;
 	}
 
 }
