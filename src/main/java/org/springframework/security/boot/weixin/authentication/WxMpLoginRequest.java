@@ -25,7 +25,7 @@ import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 /**
  * 微信公众号 Login Request
  * <a href="https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html">在线文档</a>
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
