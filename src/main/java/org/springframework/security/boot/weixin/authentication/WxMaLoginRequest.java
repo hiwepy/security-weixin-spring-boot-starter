@@ -24,7 +24,7 @@ import lombok.Data;
 
 /**
  * 微信小程序 Login Request
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
