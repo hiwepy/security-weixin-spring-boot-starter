@@ -37,6 +37,18 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 
+/**
+ * Authentication processing filter for WeChat Mini Program ({@code Ma}) login.
+ *
+ * <p>Intercepts POST requests to {@code /login/weixin/ma} (by default) and builds an
+ * {@link WxMaAuthenticationToken} from either a JSON request body or form parameters,
+ * extracting the {@code jscode}, {@code sessionKey}, {@code unionid}, {@code openid},
+ * {@code signature}, {@code rawData}, {@code encryptedData}, {@code iv} and
+ * {@code token} fields.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Slf4j
 public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
@@ -68,6 +80,17 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		this.objectMapper = objectMapper;
     }
 
+    /**
+     * Attempt to authenticate the WeChat Mini Program login request by extracting the
+     * login parameters and submitting an {@link WxMaAuthenticationToken} to the
+     * authentication manager.
+     * @param request the HTTP request carrying the login data
+     * @param response the HTTP response
+     * @return the fully populated, authenticated {@link Authentication} object
+     * @throws AuthenticationException if authentication fails
+     * @throws IOException if reading the request body fails
+     * @throws ServletException on generic servlet errors
+     */
     @Override
     public Authentication doAttemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
@@ -161,91 +184,190 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 	}
 
+	/**
+	 * Build an unauthenticated {@link WxMaAuthenticationToken} from the given login
+	 * request.
+	 * @param loginRequest the Mini Program login request carrying the WeChat parameters
+	 * @return an unauthenticated authentication token
+	 */
 	protected AbstractAuthenticationToken authenticationToken(WxMaLoginRequest loginRequest) {
 		return new WxMaAuthenticationToken( loginRequest, Boolean.TRUE.toString() );
 	}
 
+	/**
+	 * Obtain the {@code jscode} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the jscode value, or {@code null} if absent
+	 */
 	protected String obtainJscode(HttpServletRequest request) {
         return request.getParameter(jscodeParameter);
     }
 
+	/**
+	 * Obtain the {@code sessionKey} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the session key value, or {@code null} if absent
+	 */
 	protected String obtainSessionKey(HttpServletRequest request) {
         return request.getParameter(sessionKeyParameter);
     }
 
+	/**
+	 * Obtain the {@code unionid} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the union id value, or {@code null} if absent
+	 */
 	protected String obtainUnionid(HttpServletRequest request) {
         return request.getParameter(unionidParameter);
     }
 
+	/**
+	 * Obtain the {@code openid} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the open id value, or {@code null} if absent
+	 */
 	protected String obtainOpenid(HttpServletRequest request) {
         return request.getParameter(openidParameter);
     }
 
 
+	/**
+	 * Obtain the {@code signature} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the signature value, or {@code null} if absent
+	 */
 	protected String obtainSignature(HttpServletRequest request) {
         return request.getParameter(signatureParameter);
     }
 
+	/**
+	 * Obtain the {@code rawData} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the raw data value, or {@code null} if absent
+	 */
 	protected String obtainRawData(HttpServletRequest request) {
         return request.getParameter(rawDataParameter);
     }
 
+	/**
+	 * Obtain the {@code encryptedData} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the encrypted data value, or {@code null} if absent
+	 */
 	protected String obtainEncryptedData(HttpServletRequest request) {
         return request.getParameter(encryptedDataParameter);
     }
 
+	/**
+	 * Obtain the {@code iv} (initialization vector) parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the initialization vector value, or {@code null} if absent
+	 */
     protected String obtainIv(HttpServletRequest request) {
         return request.getParameter(ivParameter);
     }
 
+	/**
+	 * Obtain the {@code token} parameter value used to bind the WeChat user to a local account.
+	 * @param request the HTTP request
+	 * @return the token value, or {@code null} if absent
+	 */
 	protected String obtainToken(HttpServletRequest request) {
 		return request.getParameter(tokenParameter);
 	}
 
+	/**
+	 * Get the configured request parameter name for the {@code jscode}.
+	 * @return the jscode parameter name
+	 */
 	public String getJscodeParameter() {
 		return jscodeParameter;
 	}
 
+	/**
+	 * Set the request parameter name used to read the {@code jscode}.
+	 * @param jscodeParameter the jscode parameter name
+	 */
 	public void setJscodeParameter(String jscodeParameter) {
 		this.jscodeParameter = jscodeParameter;
 	}
 
+	/**
+	 * Get the configured request parameter name for the {@code signature}.
+	 * @return the signature parameter name
+	 */
 	public String getSignatureParameter() {
 		return signatureParameter;
 	}
 
+	/**
+	 * Set the request parameter name used to read the {@code signature}.
+	 * @param signatureParameter the signature parameter name
+	 */
 	public void setSignatureParameter(String signatureParameter) {
 		this.signatureParameter = signatureParameter;
 	}
 
+	/**
+	 * Get the configured request parameter name for the {@code rawData}.
+	 * @return the raw data parameter name
+	 */
 	public String getRawDataParameter() {
 		return rawDataParameter;
 	}
 
+	/**
+	 * Set the request parameter name used to read the {@code rawData}.
+	 * @param rawDataParameter the raw data parameter name
+	 */
 	public void setRawDataParameter(String rawDataParameter) {
 		this.rawDataParameter = rawDataParameter;
 	}
 
+	/**
+	 * Get the configured request parameter name for the {@code encryptedData}.
+	 * @return the encrypted data parameter name
+	 */
 	public String getEncryptedDataParameter() {
 		return encryptedDataParameter;
 	}
 
+	/**
+	 * Set the request parameter name used to read the {@code encryptedData}.
+	 * @param encryptedDataParameter the encrypted data parameter name
+	 */
 	public void setEncryptedDataParameter(String encryptedDataParameter) {
 		this.encryptedDataParameter = encryptedDataParameter;
 	}
 
+	/**
+	 * Get the configured request parameter name for the {@code iv}.
+	 * @return the iv parameter name
+	 */
 	public String getIvParameter() {
 		return ivParameter;
 	}
 
+	/**
+	 * Set the request parameter name used to read the {@code iv}.
+	 * @param ivParameter the iv parameter name
+	 */
 	public void setIvParameter(String ivParameter) {
 		this.ivParameter = ivParameter;
 	}
 
+	/**
+	 * Set the request parameter name used to read the {@code token}.
+	 * @param tokenParameter the token parameter name
+	 */
 	public void setTokenParameter(String tokenParameter) {
 		this.tokenParameter = tokenParameter;
 	}
 
+	/**
+	 * Get the configured request parameter name for the {@code token}.
+	 * @return the token parameter name
+	 */
 	public String getTokenParameter() {
 		return tokenParameter;
 	}

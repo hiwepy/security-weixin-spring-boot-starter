@@ -23,8 +23,18 @@ import org.springframework.util.StringUtils;
 import java.util.Objects;
 
 /**
- * https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/Official_Accounts/official_account_website_authorization.html
+ * Spring Security {@link AuthenticationProvider} for WeChat Public Account ({@code Mp}) login.
+ *
+ * <p>Exchanges the supplied OAuth2 authorization {@code code} for an access token
+ * via the WeChat {@link WxMpService}, retrieves the user profile and then resolves
+ * the local user through the configured {@link UserDetailsServiceAdapter}.</p>
+ *
+ * <p>Reference:
+ * <a href="https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/Official_Accounts/official_account_website_authorization.html">
+ * official account website authorization</a></p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @Slf4j
 public class WxMpAuthenticationProvider implements AuthenticationProvider {
@@ -42,12 +52,16 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
     }
 
     /**
+     * Attempt to authenticate the supplied Public Account authentication token.
      *
-     * <p>完成匹配Token的认证，这里返回的对象最终会通过：SecurityContextHolder.getContext().setAuthentication(authResult); 放置在上下文中</p>
+     * <p>The resulting {@link Authentication} object is ultimately placed in the
+     * security context via
+     * {@code SecurityContextHolder.getContext().setAuthentication(authResult)}.</p>
+     *
      * @author [@Loong Wan](https://github.com/loong10k)
-     * @param authentication  {@link WxMaAuthenticationToken IdentityCodeAuthenticationToken} 对象
-     * @return 认证结果{@link Authentication}对象
-     * @throws AuthenticationException  认证失败会抛出异常
+     * @param authentication the {@link WxMpAuthenticationToken} to authenticate
+     * @return the fully populated, authenticated {@link Authentication} object
+     * @throws AuthenticationException if authentication fails
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -103,27 +117,53 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
 
     }
 
+    /**
+     * Whether this provider supports the given authentication token type.
+     * @param authentication the token class to test
+     * @return {@code true} if {@link WxMpAuthenticationToken} is assignable from the given type
+     */
     @Override
     public boolean supports(Class<?> authentication) {
         return (WxMpAuthenticationToken.class.isAssignableFrom(authentication));
     }
 
+	/**
+	 * Set the checker used to validate the status (e.g. locked, disabled, expired) of
+	 * the loaded {@link UserDetails}.
+	 * @param userDetailsChecker the checker to use
+	 */
 	public void setUserDetailsChecker(UserDetailsChecker userDetailsChecker) {
 		this.userDetailsChecker = userDetailsChecker;
 	}
 
+	/**
+	 * Get the underlying {@link WxMpService} used to call WeChat Public Account APIs.
+	 * @return the WeChat Public Account service
+	 */
 	public WxMpService getWxMpService() {
 		return wxMpService;
 	}
 
+	/**
+	 * Get the checker used to validate the loaded {@link UserDetails}.
+	 * @return the user details checker
+	 */
 	public UserDetailsChecker getUserDetailsChecker() {
 		return userDetailsChecker;
 	}
 
+	/**
+	 * Get the password encoder used by this provider.
+	 * @return the password encoder
+	 */
 	public PasswordEncoder getPasswordEncoder() {
 		return passwordEncoder;
 	}
 
+	/**
+	 * Get the adapter used to load local user details for the WeChat principal.
+	 * @return the user details service adapter
+	 */
 	public UserDetailsServiceAdapter getUserDetailsService() {
 		return userDetailsService;
 	}

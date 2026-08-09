@@ -40,6 +40,18 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Servlet filter auto-configuration for WeChat Mini Program ({@code Ma}) login.
+ *
+ * <p>Activated when the {@link WxMaService} class is on the classpath and
+ * {@code spring.security.weixin.enabled=true}. It registers the
+ * {@link WxMaAuthenticationProvider} and builds a dedicated
+ * {@link SecurityFilterChain} that handles POST requests to the configured Mini Program
+ * login path (default {@code /login/weixin/ma}).</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Configuration
 @ConditionalOnClass(WxMaService.class)
 @ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
@@ -47,7 +59,15 @@ import java.util.stream.Collectors;
 	"org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration"
 })
 public class SecurityWxMaFilterConfiguration {
-    
+
+	/**
+	 * Create the {@link WxMaAuthenticationProvider} that exchanges the Mini Program
+	 * {@code jscode} for a session and loads the corresponding user details.
+	 * @param wxMaServiceProvider the optional {@link WxMaService} used to call WeChat APIs
+	 * @param userDetailsServiceProvider the optional {@link UserDetailsServiceAdapter} used to load local user details
+	 * @param passwordEncoderProvider the optional {@link PasswordEncoder} used by the provider
+	 * @return a new WeChat Mini Program authentication provider
+	 */
 	@Bean
 	public WxMaAuthenticationProvider wxJsCodeAuthenticationProvider(ObjectProvider<WxMaService> wxMaServiceProvider,
 																	 ObjectProvider<UserDetailsServiceAdapter> userDetailsServiceProvider,
@@ -105,6 +125,12 @@ public class SecurityWxMaFilterConfiguration {
    			
    		}
    		   		
+   	    /**
+		 * Build the {@link WxMaAuthenticationProcessingFilter} wired with all configured
+		 * success/failure handlers, parameter names and supporting services.
+		 * @return the configured Mini Program authentication processing filter
+		 * @throws Exception if the underlying {@code AuthenticationManager} cannot be resolved
+		 */
    	    public WxMaAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
    	    	
    			WxMaAuthenticationProcessingFilter authenticationFilter = new WxMaAuthenticationProcessingFilter(
@@ -136,7 +162,13 @@ public class SecurityWxMaFilterConfiguration {
    	        return authenticationFilter;
    	    }
 
-   		@Bean
+   		/**
+		 * Configure the security filter chain dedicated to WeChat Mini Program login.
+		 * @param http the {@link HttpSecurity} to configure
+		 * @return the built {@link SecurityFilterChain}
+		 * @throws Exception if an error occurs while configuring the chain
+		 */
+		@Bean
 		@Order(Ordered.HIGHEST_PRECEDENCE + 8)
 		public SecurityFilterChain wxMaSecurityFilterChain(HttpSecurity http) throws Exception {
 

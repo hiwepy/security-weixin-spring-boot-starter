@@ -25,6 +25,17 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
+/**
+ * Spring Security {@link AuthenticationProvider} for WeChat Mini Program ({@code Ma}) login.
+ *
+ * <p>Exchanges the supplied {@code jscode} for a session key via the WeChat
+ * {@link WxMaService}, optionally decrypts the bound phone number and user info,
+ * and then resolves the local user through the configured
+ * {@link UserDetailsServiceAdapter}.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class WxMaAuthenticationProvider implements AuthenticationProvider {
 	
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
@@ -39,14 +50,18 @@ public class WxMaAuthenticationProvider implements AuthenticationProvider {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
     /**
-     * 
-     * <p>完成匹配Token的认证，这里返回的对象最终会通过：SecurityContextHolder.getContext().setAuthentication(authResult); 放置在上下文中</p>
+     * Attempt to authenticate the supplied Mini Program authentication token.
+     *
+     * <p>The resulting {@link Authentication} object is ultimately placed in the
+     * security context via
+     * {@code SecurityContextHolder.getContext().setAuthentication(authResult)}.</p>
+     *
      * @author [@Loong Wan](https://github.com/loong10k)
-     * @param authentication  {@link WxMaAuthenticationToken IdentityCodeAuthenticationToken} 对象
-     * @return 认证结果{@link Authentication}对象
-     * @throws AuthenticationException  认证失败会抛出异常
+     * @param authentication the {@link WxMaAuthenticationToken} to authenticate
+     * @return the fully populated, authenticated {@link Authentication} object
+     * @throws AuthenticationException if authentication fails
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -118,27 +133,53 @@ public class WxMaAuthenticationProvider implements AuthenticationProvider {
        
     }
 
+    /**
+     * Whether this provider supports the given authentication token type.
+     * @param authentication the token class to test
+     * @return {@code true} if {@link WxMaAuthenticationToken} is assignable from the given type
+     */
     @Override
     public boolean supports(Class<?> authentication) {
         return (WxMaAuthenticationToken.class.isAssignableFrom(authentication));
     }
 
+	/**
+	 * Set the checker used to validate the status (e.g. locked, disabled, expired) of
+	 * the loaded {@link UserDetails}.
+	 * @param userDetailsChecker the checker to use
+	 */
 	public void setUserDetailsChecker(UserDetailsChecker userDetailsChecker) {
 		this.userDetailsChecker = userDetailsChecker;
 	}
 
+	/**
+	 * Get the underlying {@link WxMaService} used to call WeChat Mini Program APIs.
+	 * @return the WeChat Mini Program service
+	 */
 	public WxMaService getWxMaService() {
 		return wxMaService;
 	}
-	
+
+	/**
+	 * Get the checker used to validate the loaded {@link UserDetails}.
+	 * @return the user details checker
+	 */
 	public UserDetailsChecker getUserDetailsChecker() {
 		return userDetailsChecker;
 	}
 
+	/**
+	 * Get the password encoder used by this provider.
+	 * @return the password encoder
+	 */
 	public PasswordEncoder getPasswordEncoder() {
 		return passwordEncoder;
 	}
 
+	/**
+	 * Get the adapter used to load local user details for the WeChat principal.
+	 * @return the user details service adapter
+	 */
 	public UserDetailsServiceAdapter getUserDetailsService() {
 		return userDetailsService;
 	}

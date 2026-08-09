@@ -35,6 +35,17 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 
 import java.io.IOException;
 
+/**
+ * Authentication processing filter for WeChat Public Account ({@code Mp}) login.
+ *
+ * <p>Intercepts POST requests to {@code /login/weixin/mp} (by default) and builds an
+ * {@link WxMpAuthenticationToken} from either a JSON request body or form parameters,
+ * extracting the OAuth2 authorization {@code code}, {@code state} and {@code token}
+ * fields.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
@@ -56,6 +67,17 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		this.objectMapper = objectMapper;
     }
 
+    /**
+     * Attempt to authenticate the WeChat Public Account login request by extracting
+     * the login parameters and submitting an {@link WxMpAuthenticationToken} to the
+     * authentication manager.
+     * @param request the HTTP request carrying the login data
+     * @param response the HTTP response
+     * @return the fully populated, authenticated {@link Authentication} object
+     * @throws AuthenticationException if authentication fails
+     * @throws IOException if reading the request body fails
+     * @throws ServletException on generic servlet errors
+     */
     @Override
     public Authentication doAttemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
@@ -119,18 +141,39 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 	}
 	
+	/**
+	 * Build an unauthenticated {@link WxMpAuthenticationToken} from the given login
+	 * request.
+	 * @param loginRequest the Public Account login request carrying the OAuth2 parameters
+	 * @return an unauthenticated authentication token
+	 */
 	protected AbstractAuthenticationToken authenticationToken(WxMpLoginRequest loginRequest) {
 		return new WxMpAuthenticationToken( loginRequest, Boolean.TRUE.toString() );
 	}
-    
+
+	/**
+	 * Obtain the OAuth2 authorization {@code code} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the code value, or {@code null} if absent
+	 */
 	protected String obtainCode(HttpServletRequest request) {
         return request.getParameter(codeParameter);
     }
-	
+
+	/**
+	 * Obtain the OAuth2 {@code state} parameter value from the request.
+	 * @param request the HTTP request
+	 * @return the state value, or {@code null} if absent
+	 */
 	protected String obtainState(HttpServletRequest request) {
         return request.getParameter(stateParameter);
     }
 
+	/**
+	 * Obtain the {@code token} parameter value used to bind the WeChat user to a local account.
+	 * @param request the HTTP request
+	 * @return the token value, or {@code null} if absent
+	 */
 	protected String obtainToken(HttpServletRequest request) {
 		return request.getParameter(tokenParameter);
 	}

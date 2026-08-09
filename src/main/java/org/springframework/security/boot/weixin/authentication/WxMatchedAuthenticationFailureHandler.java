@@ -19,19 +19,39 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Post认证请求失败后的处理实现
+ * Matched failure handler invoked after a WeChat POST authentication request fails.
+ *
+ * <p>Renders the failure as a JSON {@link AuthResponse}, mapping known
+ * {@code WxJsCode*} exception types to their corresponding authentication response
+ * codes.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class WxMatchedAuthenticationFailureHandler implements MatchedAuthenticationFailureHandler {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
-	 
+
+	/**
+	 * Whether this handler can render the given exception type.
+	 * @param e the authentication exception to test
+	 * @return {@code true} if the exception is one of the supported WeChat exception types
+	 */
 	@Override
 	public boolean supports(AuthenticationException e) {
 		return SubjectUtils.isAssignableFrom(e.getClass(), WxAuthenticationException.class,
 				WxJsCodeExpiredException.class, WxJsCodeIncorrectException.class,
 				WxJsCodeInvalidException.class, WxJsCodeNotFoundException.class);
 	}
-	
+
+	/**
+	 * Write the JSON representation of the authentication failure to the response.
+	 * @param request the HTTP request that caused the failure
+	 * @param response the HTTP response to write to
+	 * @param e the authentication exception to render
+	 * @throws IOException if writing the response fails
+	 * @throws ServletException on generic servlet errors
+	 */
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {

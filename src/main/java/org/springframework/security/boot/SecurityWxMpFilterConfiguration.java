@@ -40,6 +40,18 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Servlet filter auto-configuration for WeChat Public Account ({@code Mp}) login.
+ *
+ * <p>Activated when the {@link WxMpService} class is on the classpath and
+ * {@code spring.security.weixin.enabled=true}. It registers the
+ * {@link WxMpAuthenticationProvider} and builds a dedicated
+ * {@link SecurityFilterChain} that handles POST requests to the configured Public
+ * Account login path (default {@code /login/weixin/mp}).</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Configuration
 @ConditionalOnClass(WxMpService.class)
 @ConditionalOnProperty(prefix = SecurityWxProperties.PREFIX, value = "enabled", havingValue = "true")
@@ -47,11 +59,19 @@ import java.util.stream.Collectors;
 	"org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration"
 })
 public class SecurityWxMpFilterConfiguration {
-    
+
+	/**
+	 * Create the {@link WxMpAuthenticationProvider} that exchanges the OAuth2
+	 * {@code code} for an access token and loads the corresponding user details.
+	 * @param wxMpServicerovider the optional {@link WxMpService} used to call WeChat APIs
+	 * @param userDetailsServiceProvider the optional {@link UserDetailsServiceAdapter} used to load local user details
+	 * @param passwordEncoderProvider the optional {@link PasswordEncoder} used by the provider
+	 * @return a new WeChat Public Account authentication provider
+	 */
 	@Bean
 	public WxMpAuthenticationProvider wxMpAuthenticationProvider(ObjectProvider<WxMpService> wxMpServicerovider,
-																 ObjectProvider<UserDetailsServiceAdapter> userDetailsServiceProvider,
-																 ObjectProvider<PasswordEncoder> passwordEncoderProvider) {
+																	 ObjectProvider<UserDetailsServiceAdapter> userDetailsServiceProvider,
+																	 ObjectProvider<PasswordEncoder> passwordEncoderProvider) {
 		return new WxMpAuthenticationProvider(wxMpServicerovider.getIfAvailable(), userDetailsServiceProvider.getIfAvailable(), passwordEncoderProvider.getIfAvailable());
 	}
 	
@@ -105,6 +125,12 @@ public class SecurityWxMpFilterConfiguration {
    			
    		}
    		   		
+   	    /**
+		 * Build the {@link WxMpAuthenticationProcessingFilter} wired with all configured
+		 * success/failure handlers, parameter names and supporting services.
+		 * @return the configured Public Account authentication processing filter
+		 * @throws Exception if the underlying {@code AuthenticationManager} cannot be resolved
+		 */
    	    public WxMpAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
    	    	
    	    	WxMpAuthenticationProcessingFilter authenticationFilter = new WxMpAuthenticationProcessingFilter(
@@ -132,6 +158,12 @@ public class SecurityWxMpFilterConfiguration {
    	        return authenticationFilter;
    	    }
 
+		/**
+		 * Configure the security filter chain dedicated to WeChat Public Account login.
+		 * @param http the {@link HttpSecurity} to configure
+		 * @return the built {@link SecurityFilterChain}
+		 * @throws Exception if an error occurs while configuring the chain
+		 */
 		@Bean
 		@Order(Ordered.HIGHEST_PRECEDENCE + 7)
 		public SecurityFilterChain wxMpSecurityFilterChain(HttpSecurity http) throws Exception {

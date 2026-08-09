@@ -34,10 +34,25 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 
+/**
+ * Matched entry point that renders WeChat-specific authentication exceptions as JSON.
+ *
+ * <p>Handles requests that arrive unauthenticated (e.g. when no WeChat login has been
+ * performed) and maps known {@code WxJsCode*} exception types to their corresponding
+ * authentication response codes.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class WxMatchedAuthenticationEntryPoint implements MatchedAuthenticationEntryPoint {
-	
+
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
-	
+
+	/**
+	 * Whether this entry point can render the given exception type.
+	 * @param e the authentication exception to test
+	 * @return {@code true} if the exception is one of the supported WeChat exception types
+	 */
 	@Override
 	public boolean supports(AuthenticationException e) {
 		return SubjectUtils.isAssignableFrom(e.getClass(), WxAuthenticationException.class,
@@ -45,6 +60,14 @@ public class WxMatchedAuthenticationEntryPoint implements MatchedAuthenticationE
 				WxJsCodeInvalidException.class, WxJsCodeNotFoundException.class);
 	}
 
+	/**
+	 * Write the JSON representation of the authentication exception to the response.
+	 * @param request the HTTP request that caused the exception
+	 * @param response the HTTP response to write to
+	 * @param e the authentication exception to render
+	 * @throws IOException if writing the response fails
+	 * @throws ServletException on generic servlet errors
+	 */
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
 			throws IOException, ServletException {

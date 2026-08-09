@@ -25,6 +25,17 @@ import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
 import org.springframework.security.boot.weixin.authentication.WxMaAuthenticationProcessingFilter;
 
+/**
+ * Authentication configuration properties for WeChat Mini Program ({@code Ma}) login.
+ *
+ * <p>Binds properties under the {@code spring.security.weixin.ma} prefix and exposes
+ * the names of the request parameters used by
+ * {@link WxMaAuthenticationProcessingFilter}, such as {@code jscode}, {@code openid},
+ * {@code encryptedData}, {@code iv} and {@code token}.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @ConfigurationProperties(SecurityWxMaAuthcProperties.PREFIX)
 @Getter
 @Setter

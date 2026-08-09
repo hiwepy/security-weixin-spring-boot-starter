@@ -26,6 +26,17 @@ import org.springframework.security.boot.biz.property.SecurityRedirectProperties
 import org.springframework.security.boot.weixin.authentication.WxMaAuthenticationProcessingFilter;
 import org.springframework.security.boot.weixin.authentication.WxMpAuthenticationProcessingFilter;
 
+/**
+ * Authentication configuration properties for WeChat Public Account ({@code Mp}) login.
+ *
+ * <p>Binds properties under the {@code spring.security.weixin.mp} prefix and exposes
+ * the names of the request parameters used by
+ * {@link WxMpAuthenticationProcessingFilter}, namely {@code code} (the OAuth2
+ * authorization code) and {@code token}.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @ConfigurationProperties(SecurityWxMpAuthcProperties.PREFIX)
 @Getter
 @Setter

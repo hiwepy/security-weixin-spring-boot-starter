@@ -23,46 +23,61 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 
 /**
- * 微信公众号 Login Request
- * <a href="https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html">在线文档</a>
+ * WeChat Public Account ({@code Mp}) login request payload.
+ *
+ * <p>Carries the OAuth2 authorization data exchanged during a Public Account web
+ * login. See the
+ * <a href="https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html">
+ * official documentation</a>.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class WxMpLoginRequest {
 
 	/**
-	 * oauth2换取access token的code .
+	 * OAuth2 authorization code used to exchange for an access token.
 	 */
 	protected String code;
 
 	/**
-	 * 	当前请求使用的token，用于绑定用户
+	 * Token of the current request, used to bind the WeChat user to a local account.
 	 */
 	protected String token;
 
+	/**
+	 * OAuth2 state parameter echoed back from the WeChat authorization server.
+	 */
 	protected String state;
 	/**
-	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
+	 * Third-party platform UnionID (the unique user id across the third-party account system).
 	 */
 	protected String unionid;
 	/**
-	 * 第三方平台OpenID（通常指第三方账号体系下某应用中用户的唯一ID）
+	 * Third-party platform OpenID (the unique user id for a specific application).
 	 */
 	protected String openid;
 	/**
-	 * 用户语言：zh_CN, zh_TW, en
+	 * Preferred user language, one of {@code zh_CN}, {@code zh_TW} or {@code en}.
 	 */
 	protected String lang = "zh_CN";
 	/**
-	 * 网页授权接口调用凭证
+	 * Web authorization access token used to invoke WeChat APIs.
 	 */
 	protected WxOAuth2AccessToken accessToken;
 	/**
-	 * 微信用户信息
+	 * WeChat user info resolved from the access token.
 	 */
 	protected WxOAuth2UserInfo userInfo;
 
+	/**
+	 * Construct a login request with the OAuth2 fields supplied by the front end.
+	 * @param code the OAuth2 authorization code
+	 * @param state the OAuth2 state parameter
+	 * @param token the token used to bind the WeChat user to a local account
+	 */
 	@JsonCreator
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public WxMpLoginRequest(@JsonProperty("code") String code,

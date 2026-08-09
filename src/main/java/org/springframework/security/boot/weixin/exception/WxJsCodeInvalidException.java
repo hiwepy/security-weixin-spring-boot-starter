@@ -3,6 +3,14 @@ package org.springframework.security.boot.weixin.exception;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.biz.exception.AuthenticationExceptionAdapter;
 
+/**
+ * Thrown when the WeChat authorization code (jscode) supplied for authentication is invalid.
+ *
+ * <p>Mapped to the {@link AuthResponseCode#SC_AUTHZ_CODE_INVALID} response code.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @SuppressWarnings("serial")
 public class WxJsCodeInvalidException extends AuthenticationExceptionAdapter {
 
@@ -10,8 +18,7 @@ public class WxJsCodeInvalidException extends AuthenticationExceptionAdapter {
 	// ===================================================================================================
 
 	/**
-	 * Constructs an <code>IdentityCodeInvalidException</code> with the specified
-	 * message.
+	 * Construct a new exception with the specified detail message.
 	 *
 	 * @param msg the detail message
 	 */
@@ -20,8 +27,7 @@ public class WxJsCodeInvalidException extends AuthenticationExceptionAdapter {
 	}
 
 	/**
-	 * Constructs an <code>IdentityCodeInvalidException</code> with the specified
-	 * message and root cause.
+	 * Construct a new exception with the specified detail message and root cause.
 	 *
 	 * @param msg the detail message
 	 * @param t   root cause

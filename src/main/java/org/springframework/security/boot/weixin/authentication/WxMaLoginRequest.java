@@ -23,68 +23,85 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- * 微信小程序 Login Request
+ * WeChat Mini Program ({@code Ma}) login request payload.
+ *
+ * <p>Carries the credentials and encrypted data sent by the Mini Program client during
+ * a login attempt, such as the {@code jscode}, session key, open id and union id.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class WxMaLoginRequest {
 
 	/**
-	 * 第三方平台js-sdk获取的编码
+	 * Authorization code obtained from the third-party js-sdk.
 	 */
 	protected String jscode;
 	/**
-	 * 会话密钥
+	 * Session key returned by the WeChat backend.
 	 */
 	protected String sessionKey;
 	/**
-	 * 第三方平台UnionID（通常指第三方账号体系下用户的唯一ID）
+	 * Third-party platform UnionID (the unique user id across the third-party account system).
 	 */
 	protected String unionid;
 	/**
-	 * 第三方平台OpenID（通常指第三方账号体系下某应用中用户的唯一ID）
+	 * Third-party platform OpenID (the unique user id for a specific application).
 	 */
 	protected String openid;
 	/**
-	 * 原始数据字符串
+	 * Raw data string used for signature verification.
 	 */
 	protected String signature;
 	/**
-	 * 校验用户信息字符串
+	 * User information verification string.
 	 */
 	protected String rawData;
 	/**
-	 * 加密用户数据
+	 * Encrypted user data.
 	 */
 	protected String encryptedData;
 	/**
-	 * 加密算法的初始向量
+	 * Initial vector of the encryption algorithm.
 	 */
 	protected String iv;
 	/**
-	 * 	当前请求使用的token，用于绑定用户
+	 * Token of the current request, used to bind the WeChat user to a local account.
 	 */
 	protected String token;
 	/**
-	 * 小程序手机号
+	 * Phone number info decrypted from the encrypted data.
 	 */
 	WxMaPhoneNumberInfo phoneNumberInfo;
 	/**
-	 * 用户信息
+	 * Decrypted WeChat Mini Program user info.
 	 */
 	protected WxMaUserInfo userInfo;
 
+	/**
+	 * Construct a login request with all raw fields supplied by the Mini Program client.
+	 * @param jscode the authorization code obtained from the js-sdk
+	 * @param sessionKey the session key returned by the WeChat backend
+	 * @param unionid the third-party platform union id
+	 * @param openid the third-party platform open id
+	 * @param signature the signature used to verify user info
+	 * @param rawData the raw data string used for signature verification
+	 * @param encryptedData the encrypted user data
+	 * @param iv the initial vector of the encryption algorithm
+	 * @param token the token used to bind the WeChat user to a local account
+	 */
 	@JsonCreator
-	@JsonIgnoreProperties(ignoreUnknown = true) 
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public WxMaLoginRequest(@JsonProperty("jscode") String jscode,
 			@JsonProperty("sessionKey") String sessionKey,
 			@JsonProperty("unionid") String unionid,
 			@JsonProperty("openid") String openid,
 			@JsonProperty("signature") String signature,
-			@JsonProperty("rawData") String rawData, 
-			@JsonProperty("encryptedData") String encryptedData, 
-			@JsonProperty("iv") String iv, 
+			@JsonProperty("rawData") String rawData,
+			@JsonProperty("encryptedData") String encryptedData,
+			@JsonProperty("iv") String iv,
 			@JsonProperty("token") String token ) {
 		
 		this.jscode = jscode;

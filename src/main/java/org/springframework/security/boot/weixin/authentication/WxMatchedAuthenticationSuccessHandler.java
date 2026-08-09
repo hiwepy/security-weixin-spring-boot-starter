@@ -23,11 +23,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 微信公共号、小程序认证 (authentication)成功回调器：讲认证信息写回前端
+ * Matched success handler invoked after a WeChat (Public Account or Mini Program)
+ * authentication succeeds.
+ *
+ * <p>Serializes the authenticated profile (optionally as a JWT built through the
+ * {@link JwtPayloadRepository}) back to the front end as JSON.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticationSuccessHandler {
-   
+
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	@Setter
     @Getter
@@ -35,16 +41,34 @@ public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticat
 	@Setter
     @Getter
     private boolean checkExpiry = false;
-	
+
+	/**
+	 * Construct a success handler with the optional {@link JwtPayloadRepository} used
+	 * to build the JWT payload.
+	 * @param payloadRepository the JWT payload repository, may be {@code null}
+	 */
 	public WxMatchedAuthenticationSuccessHandler(JwtPayloadRepository payloadRepository) {
 		this.setPayloadRepository(payloadRepository);
 	}
-	
+
+	/**
+	 * Whether this handler supports the given authentication token type.
+	 * @param authentication the authentication to test
+	 * @return {@code true} if the authentication is a {@link WxMpAuthenticationToken} or a {@link WxMaAuthenticationToken}
+	 */
 	@Override
 	public boolean supports(Authentication authentication) {
 		return SubjectUtils.isAssignableFrom(authentication.getClass(), WxMpAuthenticationToken.class, WxMaAuthenticationToken.class);
 	}
 
+	/**
+	 * Build the success payload (optionally as a JWT) and write it to the response as JSON.
+	 * @param request the HTTP request that triggered the authentication
+	 * @param response the HTTP response to write to
+	 * @param authentication the successful authentication
+	 * @throws IOException if writing the response fails
+	 * @throws ServletException on generic servlet errors
+	 */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {

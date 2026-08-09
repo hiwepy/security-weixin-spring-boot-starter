@@ -21,6 +21,17 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 
 import java.util.Collection;
 
+/**
+ * Authentication token representing a WeChat Public Account ({@code Mp}) login request
+ * or an authenticated Public Account principal.
+ *
+ * <p>Used as both the unauthenticated request token (carrying a
+ * {@link WxMpLoginRequest} principal) and the authenticated result token (carrying
+ * the resolved {@code UserDetails}).</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
@@ -28,6 +39,12 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
 
+    /**
+     * Create an unauthenticated token carrying the supplied login principal and
+     * credentials.
+     * @param principal the {@link WxMpLoginRequest} (or other principal) carried by this token
+     * @param credentials the credentials (typically a placeholder such as {@code "true"})
+     */
     public WxMpAuthenticationToken(Object principal, String credentials) {
         super((Collection<? extends GrantedAuthority>) null);
         this.principal = principal;
@@ -35,6 +52,13 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
+    /**
+     * Create an authenticated token with the supplied principal, credentials and
+     * granted authorities.
+     * @param principal the authenticated principal (e.g. {@code UserDetails})
+     * @param credentials the authenticated credentials
+     * @param authorities the granted authorities for the authenticated principal
+     */
     public WxMpAuthenticationToken(Object principal,  Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
@@ -45,26 +69,47 @@ public class WxMpAuthenticationToken extends AbstractAuthenticationToken {
     // ~ Methods
     // ========================================================================================================
 
+    /**
+     * Get the credentials proof (e.g. password or access token) carried by this token.
+     * @return the credentials
+     */
     @Override
 	public Object getCredentials() {
-        return this.credentials;
-    }
+		return this.credentials;
+	}
 
+    /**
+     * Get the principal (e.g. {@link WxMpLoginRequest} or {@code UserDetails})
+     * represented by this token.
+     * @return the principal
+     */
     @Override
 	public Object getPrincipal() {
-        return this.principal;
-    }
+		return this.principal;
+	}
 
+    /**
+     * Set whether this token is authenticated.
+     *
+     * <p>Setting {@code true} is rejected; an authenticated token must be created
+     * through the constructor that accepts a list of granted authorities.</p>
+     *
+     * @param isAuthenticated {@code true} to mark the token as trusted (rejected), {@code false} to mark it unauthenticated
+     * @throws IllegalArgumentException if {@code isAuthenticated} is {@code true}
+     */
     @Override
 	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        if (isAuthenticated) {
+		if (isAuthenticated) {
             throw new IllegalArgumentException(
                     "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
         }
 
         super.setAuthenticated(false);
-    }
+	}
 
+    /**
+     * Erase the credentials carried by this token.
+     */
     @Override
     public void eraseCredentials() {
         super.eraseCredentials();
