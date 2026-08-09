@@ -58,6 +58,11 @@ import java.util.stream.Collectors;
 @AutoConfigureBefore(name = {
 	"org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration"
 })
+/** Configuration for Wx Ma authentication filter chain.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class SecurityWxMaFilterConfiguration {
 
 	/**
@@ -74,6 +79,11 @@ public class SecurityWxMaFilterConfiguration {
 																	 ObjectProvider<PasswordEncoder> passwordEncoderProvider) {
 		return new WxMaAuthenticationProvider(wxMaServiceProvider.getIfAvailable(), userDetailsServiceProvider.getIfAvailable(), passwordEncoderProvider.getIfAvailable());
 	}
+   	/** Adapter implementation for Wx Ma Web Security Customizer.
+   	 *
+   	 * @author [@Loong Wan](https://github.com/loong10k)
+   	 * @since 1.0.0
+   	 */
 
     @Configuration
     @EnableConfigurationProperties({ SecurityWxProperties.class, SecurityWxMaAuthcProperties.class, SecurityBizProperties.class })
@@ -137,7 +147,7 @@ public class SecurityWxMaFilterConfiguration {
    					objectMapper);
    			
    			/**
-			 * 批量设置参数
+			 * 
 			 */
 			PropertyMapper map = PropertyMapper.get();
 			
@@ -191,6 +201,9 @@ public class SecurityWxMaFilterConfiguration {
 		}
 
 		@Override
+	    /** Customizes the web security configuration.
+	     * @param web the web
+	     */
 	    public void customize(WebSecurity web) {
 	    	super.customize(web);
 	    }
