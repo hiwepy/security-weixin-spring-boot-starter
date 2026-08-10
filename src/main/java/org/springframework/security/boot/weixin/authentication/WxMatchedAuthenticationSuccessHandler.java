@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * 微信公共号、小程序认证 (authentication)成功回调器：讲认证信息写回前端
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticationSuccessHandler {
    
