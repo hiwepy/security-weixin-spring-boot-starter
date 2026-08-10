@@ -46,7 +46,7 @@ import static org.mockito.Mockito.mock;
  * (the bulk of the class body) is exercised without booting a full servlet
  * container.</p>
  *
- * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @DisplayName("SecurityWxMaFilterConfiguration Tests")

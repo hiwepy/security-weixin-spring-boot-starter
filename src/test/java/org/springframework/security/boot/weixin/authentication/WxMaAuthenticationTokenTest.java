@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
  * authenticated flag lifecycle, {@code eraseCredentials} behaviour and the
  * guard rail that prevents promoting an unauthenticated token.</p>
  *
- * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @DisplayName("WxMaAuthenticationToken Tests")
