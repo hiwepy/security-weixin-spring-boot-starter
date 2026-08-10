@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for {@link WxMaAuthenticationProcessingFilter}.
  *
- * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @DisplayName("WxMaAuthenticationProcessingFilter Tests")
