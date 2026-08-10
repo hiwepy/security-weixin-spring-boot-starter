@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <p>Verifies the configuration prefix, default values and the
  * getter/setter contract for the {@code enabled} flag.</p>
  *
- * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @DisplayName("SecurityWxProperties Tests")

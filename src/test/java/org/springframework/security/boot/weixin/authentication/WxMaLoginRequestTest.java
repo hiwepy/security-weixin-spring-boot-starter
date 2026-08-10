@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <p>Verifies the constructor argument binding, the Lombok-generated
  * getters/setters and JSON deserialization.</p>
  *
- * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @DisplayName("WxMaLoginRequest Tests")

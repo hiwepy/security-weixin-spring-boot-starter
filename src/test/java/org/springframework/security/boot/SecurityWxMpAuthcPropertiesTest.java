@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <p>Verifies the configuration prefix, default parameter names, the nested
  * {@code redirect}/{@code logout} properties and the getter/setter contract.</p>
  *
- * @author <a href="https://github.com/loong10k">[@Loong Wan]</a>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @DisplayName("SecurityWxMpAuthcProperties Tests")
