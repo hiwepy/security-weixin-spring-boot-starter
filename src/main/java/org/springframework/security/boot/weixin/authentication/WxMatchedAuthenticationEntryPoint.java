@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets;
  * performed) and maps known {@code WxJsCode*} exception types to their corresponding
  * authentication response codes.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class WxMatchedAuthenticationEntryPoint implements MatchedAuthenticationEntryPoint {

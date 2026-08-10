@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  * {@link SecurityFilterChain} that handles POST requests to the configured Mini Program
  * login path (default {@code /login/weixin/ma}).</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Configuration
@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 })
 /** Configuration for Wx Ma authentication filter chain.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class SecurityWxMaFilterConfiguration {
@@ -81,7 +81,7 @@ public class SecurityWxMaFilterConfiguration {
 	}
    	/** Adapter implementation for Wx Ma Web Security Customizer.
    	 *
-   	 * @author [@Loong Wan](https://github.com/loong10k)
+   	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
    	 * @since 1.0.0
    	 */
 

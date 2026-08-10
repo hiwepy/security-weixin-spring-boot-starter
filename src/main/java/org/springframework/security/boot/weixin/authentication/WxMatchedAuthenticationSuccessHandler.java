@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
  * <p>Serializes the authenticated profile (optionally as a JWT built through the
  * {@link JwtPayloadRepository}) back to the front end as JSON.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class WxMatchedAuthenticationSuccessHandler implements MatchedAuthenticationSuccessHandler {

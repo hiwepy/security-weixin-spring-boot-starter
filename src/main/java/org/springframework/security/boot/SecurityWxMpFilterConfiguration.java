@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  * {@link SecurityFilterChain} that handles POST requests to the configured Public
  * Account login path (default {@code /login/weixin/mp}).</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Configuration
@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 })
 /** Configuration for Wx Mp authentication filter chain.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class SecurityWxMpFilterConfiguration {
@@ -81,7 +81,7 @@ public class SecurityWxMpFilterConfiguration {
 	}
     /** Adapter implementation for Wx Mp Web Security Customizer.
      *
-     * @author [@Loong Wan](https://github.com/loong10k)
+     * @author <a href="https://github.com/loong10k">Loong Wan</a>
      * @since 1.0.0
      */
 	

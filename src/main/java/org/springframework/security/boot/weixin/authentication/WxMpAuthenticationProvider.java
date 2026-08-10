@@ -33,7 +33,7 @@ import java.util.Objects;
  * <a href="https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/Official_Accounts/official_account_website_authorization.html">
  * official account website authorization</a></p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Slf4j
@@ -58,7 +58,7 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
      * security context via
      * {@code SecurityContextHolder.getContext().setAuthentication(authResult)}.</p>
      *
-     * @author [@Loong Wan](https://github.com/loong10k)
+     * @author <a href="https://github.com/loong10k">Loong Wan</a>
      * @param authentication the {@link WxMpAuthenticationToken} to authenticate
      * @return the fully populated, authenticated {@link Authentication} object
      * @throws AuthenticationException if authentication fails

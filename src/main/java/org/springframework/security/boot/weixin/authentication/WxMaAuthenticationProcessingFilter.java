@@ -46,7 +46,7 @@ import java.io.IOException;
  * {@code signature}, {@code rawData}, {@code encryptedData}, {@code iv} and
  * {@code token} fields.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Slf4j

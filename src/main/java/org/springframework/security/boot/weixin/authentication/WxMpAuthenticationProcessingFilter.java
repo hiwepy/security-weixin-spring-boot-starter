@@ -43,7 +43,7 @@ import java.io.IOException;
  * extracting the OAuth2 authorization {@code code}, {@code state} and {@code token}
  * fields.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {

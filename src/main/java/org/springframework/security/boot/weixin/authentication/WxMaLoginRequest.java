@@ -28,7 +28,7 @@ import lombok.Data;
  * <p>Carries the credentials and encrypted data sent by the Mini Program client during
  * a login attempt, such as the {@code jscode}, session key, open id and union id.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

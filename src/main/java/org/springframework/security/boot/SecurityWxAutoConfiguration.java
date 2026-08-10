@@ -18,7 +18,7 @@ import org.springframework.security.boot.weixin.authentication.WxMatchedAuthenti
  * authentication filter chains. The configuration is activated only when
  * {@code spring.security.weixin.enabled} is {@code true}.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Configuration

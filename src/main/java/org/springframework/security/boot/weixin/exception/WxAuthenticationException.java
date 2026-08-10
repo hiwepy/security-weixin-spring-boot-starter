@@ -24,7 +24,7 @@ import org.springframework.security.boot.biz.exception.AuthenticationExceptionAd
  * <p>Mapped to the {@link AuthResponseCode#SC_AUTHZ_THIRD_PARTY_SERVICE} response
  * code.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class WxAuthenticationException extends AuthenticationExceptionAdapter {

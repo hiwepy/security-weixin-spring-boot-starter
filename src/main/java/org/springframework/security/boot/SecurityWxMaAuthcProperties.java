@@ -33,7 +33,7 @@ import org.springframework.security.boot.weixin.authentication.WxMaAuthenticatio
  * {@link WxMaAuthenticationProcessingFilter}, such as {@code jscode}, {@code openid},
  * {@code encryptedData}, {@code iv} and {@code token}.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @ConfigurationProperties(SecurityWxMaAuthcProperties.PREFIX)

@@ -30,7 +30,7 @@ import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
  * <a href="https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html">
  * official documentation</a>.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -33,7 +33,7 @@ import java.util.Objects;
  * and then resolves the local user through the configured
  * {@link UserDetailsServiceAdapter}.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class WxMaAuthenticationProvider implements AuthenticationProvider {
@@ -58,7 +58,7 @@ public class WxMaAuthenticationProvider implements AuthenticationProvider {
      * security context via
      * {@code SecurityContextHolder.getContext().setAuthentication(authResult)}.</p>
      *
-     * @author [@Loong Wan](https://github.com/loong10k)
+     * @author <a href="https://github.com/loong10k">Loong Wan</a>
      * @param authentication the {@link WxMaAuthenticationToken} to authenticate
      * @return the fully populated, authenticated {@link Authentication} object
      * @throws AuthenticationException if authentication fails
