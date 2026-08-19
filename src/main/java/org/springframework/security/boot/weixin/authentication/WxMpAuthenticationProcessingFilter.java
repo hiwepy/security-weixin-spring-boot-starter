@@ -50,8 +50,23 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	
+	/**
+	 * Constructs a new wx mp authentication processing filter instance.
+	 *
+	 * @param objectMapper the object mapper
+	 */
 	public static final String SPRING_SECURITY_FORM_CODE_KEY = "code";
+	/**
+	 * Constructs a new wx mp authentication processing filter instance.
+	 *
+	 * @param objectMapper the object mapper
+	 */
 	public static final String SPRING_SECURITY_FORM_STATE_KEY = "state";
+	/**
+	 * Constructs a new wx mp authentication processing filter instance.
+	 *
+	 * @param objectMapper the object mapper
+	 */
 	public static final String SPRING_SECURITY_FORM_TOKEN_KEY = "token";
 
     @Setter
@@ -62,6 +77,11 @@ public class WxMpAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
     private String tokenParameter = SPRING_SECURITY_FORM_TOKEN_KEY;
 	private final ObjectMapper objectMapper;
 	
+    /**
+     * Constructs a new wx mp authentication processing filter instance.
+     *
+     * @param objectMapper the object mapper
+     */
     public WxMpAuthenticationProcessingFilter(ObjectMapper objectMapper) {
 		super(PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/login/weixin/mp"));
 		this.objectMapper = objectMapper;

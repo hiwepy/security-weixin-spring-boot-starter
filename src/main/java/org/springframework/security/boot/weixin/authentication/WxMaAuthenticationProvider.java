@@ -45,6 +45,13 @@ public class WxMaAuthenticationProvider implements AuthenticationProvider {
     private final WxMaService wxMaService;
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
     
+    /**
+     * Constructs a new wx ma authentication provider instance.
+     *
+     * @param wxMaService the wx ma service
+     * @param userDetailsService the user details service
+     * @param passwordEncoder the password encoder
+     */
     public WxMaAuthenticationProvider(final WxMaService wxMaService, final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
         this.wxMaService = wxMaService;
         this.userDetailsService = userDetailsService;

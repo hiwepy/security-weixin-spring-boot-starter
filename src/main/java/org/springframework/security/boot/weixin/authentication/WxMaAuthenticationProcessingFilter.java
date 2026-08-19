@@ -61,6 +61,11 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
     public static final String SPRING_SECURITY_FORM_RAWDATA_KEY = "rawData";
     public static final String SPRING_SECURITY_FORM_ENCRYPTEDDATA_KEY = "encryptedData";
     public static final String SPRING_SECURITY_FORM_IV_KEY = "iv";
+	/**
+	 * Constructs a new wx ma authentication processing filter instance.
+	 *
+	 * @param objectMapper the object mapper
+	 */
 	public static final String SPRING_SECURITY_FORM_TOKEN_KEY = "token";
 
     private String jscodeParameter = SPRING_SECURITY_FORM_JSCODE_KEY;
@@ -75,6 +80,11 @@ public class WxMaAuthenticationProcessingFilter extends PostOnlyAuthenticationPr
 
 	private final ObjectMapper objectMapper;
 
+    /**
+     * Constructs a new wx ma authentication processing filter instance.
+     *
+     * @param objectMapper the object mapper
+     */
     public WxMaAuthenticationProcessingFilter(ObjectMapper objectMapper) {
 		super(PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/login/weixin/ma"));
 		this.objectMapper = objectMapper;

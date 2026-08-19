@@ -45,6 +45,13 @@ public class WxMpAuthenticationProvider implements AuthenticationProvider {
     private final WxMpService wxMpService;
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
 
+    /**
+     * Constructs a new wx mp authentication provider instance.
+     *
+     * @param wxMpService the wx mp service
+     * @param userDetailsService the user details service
+     * @param passwordEncoder the password encoder
+     */
     public WxMpAuthenticationProvider(final WxMpService wxMpService, final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
         this.wxMpService = wxMpService;
         this.userDetailsService = userDetailsService;
